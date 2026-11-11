@@ -4,249 +4,265 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Skill Hunt Scholarship Exam</title>
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Supabase JS Library CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Google Fonts: Inter & Amiri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Google Fonts: Amiri -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-
-<style>
-  .arabic-text {
-    font-family: 'Amiri', serif;
-    direction: rtl;
-    text-align: right;
-    line-height: 1.8;
-  }
-
-  .circular-chart {
-    display: block;
-    margin: 0 auto;
-    max-width: 60px;
-    max-height: 60px;
-  }
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .arabic-text {
+      font-family: 'Amiri', serif;
+      direction: rtl;
+      text-align: right;
+      line-height: 1.9;
+    }
+    .smooth-timer {
+      transition: width 1s linear, background-color 0.5s ease;
+    }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 font-sans antialiased">
+<body class="bg-slate-100 min-h-screen text-slate-800 antialiased flex flex-col justify-between">
 
   <!-- Header -->
-  <header class="bg-indigo-900 text-white p-4 shadow-md sticky top-0 z-50">
-    <div class="max-w-4xl mx-auto flex justify-between items-center px-2">
-      <h1 class="font-bold text-lg md:text-xl tracking-tight">🎓 Skill Hunt Exam</h1>
-      <div id="navLinks" class="space-x-4 text-sm font-medium hidden">
-        <button onclick="switchView('practice')" class="hover:text-indigo-200">Practice</button>
-        <button onclick="switchView('leaderboard')" class="hover:text-indigo-200">Leaderboard</button>
-        <button onclick="logout()" class="text-red-300 hover:text-red-100">Logout</button>
+  <header class="bg-indigo-950 text-white shadow-lg sticky top-0 z-50 border-b border-indigo-900/50">
+    <div class="max-w-4xl mx-auto flex justify-between items-center px-4 py-3.5">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🎓</span>
+        <h1 class="font-extrabold text-lg md:text-xl tracking-tight text-white">Skill Hunt <span class="text-indigo-400 font-semibold text-sm">Exam Portal</span></h1>
+      </div>
+      <div id="navLinks" class="space-x-3 text-sm font-semibold hidden items-center">
+        <button onclick="switchView('practice')" class="px-3 py-1.5 rounded-lg hover:bg-white/10 transition">Practice</button>
+        <button onclick="switchView('leaderboard')" class="px-3 py-1.5 rounded-lg hover:bg-white/10 transition">Leaderboard</button>
+        <button onclick="logout()" class="px-3 py-1.5 rounded-lg text-rose-300 hover:bg-rose-500/20 hover:text-rose-200 transition">Logout</button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto p-4 mt-6">
+  <main class="max-w-3xl w-full mx-auto p-4 my-auto">
 
     <!-- 1. AUTH SECTION -->
-    <section id="authSection" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md border border-slate-200">
-      <h2 id="authTitle" class="text-2xl font-bold text-center text-slate-800 mb-6">Student Login</h2>
-      <div id="authAlert" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
+    <section id="authSection" class="max-w-md mx-auto bg-white p-7 rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100">
+      <div class="text-center mb-6">
+        <h2 id="authTitle" class="text-2xl font-black text-slate-900 tracking-tight">Student Login</h2>
+        <p class="text-xs text-slate-500 mt-1">Skill Hunt Scholarship Examination</p>
+      </div>
+      
+      <div id="authAlert" class="hidden p-3 mb-4 text-xs font-semibold rounded-xl leading-relaxed"></div>
 
       <!-- LOGIN FORM -->
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-sm font-semibold mb-1">Student ID / Roll No</label>
-          <input type="text" id="loginStudentId" required placeholder="Enter your ID"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Student ID / Roll No</label>
+          <input type="text" id="loginStudentId" required placeholder="Enter ID number"
+            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
         </div>
         <div>
-          <label class="block text-sm font-semibold mb-1">Password</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Password</label>
           <input type="password" id="loginPassword" required placeholder="Enter password"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
         </div>
         <button type="submit" id="loginBtn"
-          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition">
-          Login
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md shadow-indigo-600/30 transition">
+          Login to Dashboard
         </button>
       </form>
 
-      <!-- REGISTRATION FORM -->
+      <!-- REGISTRATION STEP-BY-STEP -->
       <div id="registerContainer" class="hidden space-y-4">
         <div id="verifyStep">
-          <label class="block text-sm font-semibold mb-1">Enter Student ID / Roll No</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Student ID / Roll No</label>
           <div class="flex gap-2">
             <input type="text" id="regStudentId" placeholder="e.g. 520211"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
             <button type="button" onclick="verifyStudentId()" id="verifyBtn"
-              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition">
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow transition">
               Verify
             </button>
           </div>
         </div>
 
-        <div id="studentDetailsCard" class="hidden bg-indigo-50 p-4 rounded-xl border border-indigo-100 space-y-2 text-sm">
-          <p class="font-bold text-indigo-950 text-base border-b border-indigo-200 pb-1">വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ</p>
-          <div class="grid grid-cols-3 gap-1">
-            <span class="text-slate-500">Name:</span>
-            <span id="detName" class="font-bold text-slate-800 col-span-2"></span>
+        <div id="studentDetailsCard" class="hidden bg-indigo-50/70 p-4 rounded-2xl border border-indigo-100 space-y-2 text-xs">
+          <p class="font-extrabold text-indigo-950 text-sm border-b border-indigo-200/80 pb-1">വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ</p>
+          <div class="grid grid-cols-3 gap-1 pt-1">
+            <span class="text-slate-500 font-medium">Name:</span>
+            <span id="detName" class="font-bold text-slate-900 col-span-2"></span>
           </div>
           <div class="grid grid-cols-3 gap-1">
-            <span class="text-slate-500">College:</span>
+            <span class="text-slate-500 font-medium">College:</span>
             <span id="detCollege" class="font-semibold text-slate-800 col-span-2"></span>
           </div>
           <div class="grid grid-cols-3 gap-1">
-            <span class="text-slate-500">Category:</span>
-            <span id="detCategory" class="font-semibold text-slate-800 col-span-2 uppercase"></span>
+            <span class="text-slate-500 font-medium">Category:</span>
+            <span id="detCategory" class="font-bold text-indigo-700 col-span-2 uppercase"></span>
           </div>
 
-          <div class="pt-3 border-t border-indigo-200 space-y-3">
+          <div class="pt-3 border-t border-indigo-200/80 space-y-2.5">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Set Password</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Set Password</label>
               <input type="password" id="regPassword" placeholder="Minimum 6 characters"
-                class="w-full px-3 py-2 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" />
+                class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" />
             </div>
             <button type="button" onclick="confirmAndRegister()" id="confirmRegBtn"
-              class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg shadow-sm transition">
+              class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow transition">
               Confirm & Register
             </button>
           </div>
         </div>
       </div>
 
-      <div class="mt-6 text-center text-sm text-slate-600">
+      <div class="mt-6 text-center text-xs text-slate-500 font-medium">
         <span id="toggleText">New student?</span>
-        <button type="button" onclick="toggleAuthMode()" id="toggleBtn" class="text-indigo-600 font-bold underline ml-1">
+        <button type="button" onclick="toggleAuthMode()" id="toggleBtn" class="text-indigo-600 font-bold hover:underline ml-1">
           Register now
         </button>
       </div>
     </section>
 
     <!-- 2. PRACTICE SECTION -->
-    <section id="practiceSection" class="hidden max-w-2xl mx-auto space-y-5">
-      <!-- Profile & Score Header -->
-      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+    <section id="practiceSection" class="hidden space-y-4">
+      
+      <!-- Top Profile & Score Banner -->
+      <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 flex justify-between items-center">
         <div>
-          <h2 id="studentNameDisplay" class="text-lg md:text-xl font-bold text-slate-800">Student Name</h2>
-          <p id="studentInfoDisplay" class="text-xs md:text-sm text-slate-500">College • Category</p>
+          <h2 id="studentNameDisplay" class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Student Name</h2>
+          <p id="studentInfoDisplay" class="text-xs text-slate-500 font-medium mt-0.5">College • Category</p>
         </div>
-        <div class="text-right">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Score</span>
-          <p id="currentScoreDisplay" class="text-2xl md:text-3xl font-extrabold text-indigo-600">0</p>
+        <div class="text-right bg-indigo-50/80 px-4 py-2 rounded-2xl border border-indigo-100">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Total Score</span>
+          <p id="currentScoreDisplay" class="text-2xl md:text-3xl font-black text-indigo-700 leading-none mt-0.5">0</p>
         </div>
       </div>
 
-      <!-- Subject & Phase Selector Controls -->
-      <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-3 items-center justify-between">
-        <!-- Department Filter -->
+      <!-- Controls: Subject & Phase Bar -->
+      <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-2.5 items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-slate-500 uppercase">Subject:</span>
-          <select id="deptFilter" onchange="onFilterChange()" class="px-3 py-1.5 border rounded-lg text-sm font-semibold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option value="ALL">All Subjects</option>
-            <option value="Nahv">Nahv</option>
-            <option value="swarf">Swarf</option>
+          <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Subject</span>
+          <select id="deptFilter" onchange="onFilterChange()" 
+            class="px-3 py-1.5 border border-slate-200 rounded-xl text-xs font-bold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-600">
           </select>
         </div>
 
-        <!-- Phase Selector -->
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-slate-500 uppercase">Phase:</span>
-          <select id="phaseSelect" onchange="onPhaseChange()" class="px-3 py-1.5 border rounded-lg text-sm font-semibold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <!-- Dynamically populated -->
+          <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Phase</span>
+          <select id="phaseSelect" onchange="onPhaseChange()" 
+            class="px-3 py-1.5 border border-slate-200 rounded-xl text-xs font-bold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-600">
           </select>
         </div>
       </div>
 
-      <!-- Question Box -->
-      <div id="questionContainer" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
-        <div class="flex justify-between items-center border-b pb-4 border-slate-100">
-          <div>
-            <span id="phaseBadge" class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">Phase 1</span>
-            <span id="qCountDisplay" class="text-sm font-semibold text-slate-500 ml-2">Question 1/10</span>
-          </div>
+      <!-- Practice Question Box -->
+      <div id="questionContainer" class="bg-white rounded-3xl shadow-md shadow-slate-200/50 border border-slate-200 overflow-hidden">
+        
+        <!-- Animated Time Progress Bar -->
+        <div class="w-full bg-slate-100 h-2 relative overflow-hidden">
+          <div id="timeProgressBar" class="h-full bg-indigo-600 smooth-timer" style="width: 100%;"></div>
+        </div>
 
-          <!-- Circular Countdown Timer -->
-          <div class="flex items-center gap-2">
-            <div class="relative w-12 h-12 flex items-center justify-center">
-              <svg viewBox="0 0 36 36" class="circular-chart">
-                <path class="circle-bg"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path id="timerCircle" class="circle stroke-indigo-600"
-                  stroke-dasharray="100, 100"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              </svg>
-              <span id="timerText" class="absolute text-xs font-bold text-slate-700">30s</span>
+        <div class="p-6 md:p-8 space-y-6">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <div class="flex items-center gap-2">
+              <span id="phaseBadge" class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase">Phase 1</span>
+              <span id="qCountDisplay" class="text-slate-400">Question 1/10</span>
+            </div>
+            <div class="flex items-center gap-1.5 font-bold" id="timerBadge">
+              <span class="text-slate-400 text-[11px]">TIME:</span>
+              <span id="timerText" class="text-sm font-black text-indigo-600 w-8 text-right font-mono">30s</span>
             </div>
           </div>
+
+          <!-- Arabic Question Text -->
+          <div class="py-2">
+            <p id="questionText" class="arabic-text text-2xl md:text-3xl font-bold text-slate-900">
+              ...
+            </p>
+          </div>
+
+          <!-- Options -->
+          <div class="grid grid-cols-1 gap-3" id="optionsContainer"></div>
+
+          <button id="nextBtn" onclick="nextQuestion()"
+            class="hidden w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-indigo-600/30 transition text-sm">
+            Next Question ➔
+          </button>
         </div>
-
-        <p id="questionText" class="text-2xl font-bold text-slate-900 leading-relaxed arabic-text">
-  Question text...
-        </p>
-
-        <div class="grid grid-cols-1 gap-3 pt-2" id="optionsContainer"></div>
-
-        <button id="nextBtn" onclick="nextQuestion()"
-          class="hidden w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">
-          Next Question ➔
-        </button>
       </div>
 
-      <!-- Phase Result Card (Shown at the end of each 10 questions) -->
-      <div id="phaseResultCard" class="hidden bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center space-y-4">
-        <h3 id="phaseResultTitle" class="text-2xl font-extrabold text-slate-900">Phase Completed!</h3>
-        <p id="phaseResultScore" class="text-lg text-slate-600"></p>
-        <div class="flex justify-center gap-4 pt-2">
-          <button onclick="retryCurrentPhase()" class="px-5 py-2.5 border border-indigo-600 text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition">
+      <!-- Phase Result Summary Card -->
+      <div id="phaseResultCard" class="hidden bg-white p-8 rounded-3xl shadow-sm border border-slate-200 text-center space-y-5">
+        <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+          🎯
+        </div>
+        <div>
+          <h3 id="phaseResultTitle" class="text-2xl font-black text-slate-900 tracking-tight">Phase Complete!</h3>
+          <p id="phaseResultScore" class="text-sm text-slate-600 mt-2 font-medium"></p>
+        </div>
+        <div class="flex justify-center gap-3 pt-2">
+          <button onclick="retryCurrentPhase()" class="px-5 py-2.5 border border-indigo-600 text-indigo-600 font-bold rounded-xl text-xs hover:bg-indigo-50 transition">
             🔄 Retry Phase
           </button>
-          <button id="nextPhaseBtn" onclick="goToNextPhase()" class="px-6 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">
+          <button id="nextPhaseBtn" onclick="goToNextPhase()" class="px-6 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 shadow transition">
             Next Phase ➔
           </button>
         </div>
       </div>
+
     </section>
 
     <!-- 3. LEADERBOARD SECTION -->
-    <section id="leaderboardSection" class="hidden max-w-3xl mx-auto space-y-6">
-      <div class="text-center space-y-2">
-        <h2 class="text-3xl font-extrabold text-slate-900">🏆 Leaderboard</h2>
-        <p class="text-slate-500">Real-time rankings based on practice scores</p>
+    <section id="leaderboardSection" class="hidden space-y-5">
+      <div class="text-center space-y-1">
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">🏆 Real-time Leaderboard</h2>
+        <p class="text-xs text-slate-500 font-medium">Rankings updated automatically from practice attempts</p>
       </div>
 
-      <div class="flex justify-center space-x-3">
+      <div class="flex justify-center gap-2">
         <button id="degTab" onclick="loadLeaderboard('degree_first_year')"
-          class="px-5 py-2 rounded-xl font-bold bg-indigo-600 text-white transition">
+          class="px-5 py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm">
           Degree 1st Year
         </button>
         <button id="pgTab" onclick="loadLeaderboard('pg_first_year')"
-          class="px-5 py-2 rounded-xl font-bold bg-white border text-slate-600 hover:bg-slate-50 transition">
+          class="px-5 py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">
           PG 1st Year
         </button>
       </div>
 
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-100 text-slate-600 text-xs font-semibold uppercase tracking-wider">
+            <tr class="bg-slate-50 border-b border-slate-100 text-slate-400 text-[11px] font-extrabold uppercase tracking-wider">
               <th class="p-4 text-center">Rank</th>
               <th class="p-4">Student</th>
               <th class="p-4">College</th>
               <th class="p-4 text-right">Points</th>
             </tr>
           </thead>
-          <tbody id="leaderboardBody" class="divide-y divide-slate-100 text-sm"></tbody>
+          <tbody id="leaderboardBody" class="divide-y divide-slate-100 text-xs"></tbody>
         </table>
       </div>
     </section>
 
   </main>
 
+  <footer class="py-4 text-center text-slate-400 text-xs">
+    Skill Hunt Examination Platform • Academic Cell
+  </footer>
+
   <script>
     const SUPABASE_URL = "https://nvrerueqxbiedwqdiikc.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_VG31jRVuAy9Pau8gU7nT9Q_yT5fOb4h";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const QUESTION_TIME_LIMIT = 30; // 30 Seconds per question
-    const QUESTIONS_PER_PHASE = 10; // 10 questions per Phase
+    const QUESTION_TIME_LIMIT = 30; // 30 seconds
+    const QUESTIONS_PER_PHASE = 10;
 
     let isRegisterMode = false;
     let verifiedStudent = null;
@@ -300,7 +316,7 @@
 
     function showAlert(msg, isError = true) {
       const alertBox = document.getElementById('authAlert');
-      alertBox.className = `p-3 mb-4 text-sm rounded-lg ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+      alertBox.className = `p-3 mb-4 text-xs font-semibold rounded-xl leading-relaxed ${isError ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`;
       alertBox.innerText = msg;
       alertBox.classList.remove('hidden');
     }
@@ -409,7 +425,7 @@
         password: pwd
       });
 
-      loginBtn.innerText = 'Login';
+      loginBtn.innerText = 'Login to Dashboard';
       loginBtn.disabled = false;
 
       if (error) {
@@ -432,11 +448,11 @@
       currentUserProfile = profile;
       document.getElementById('authSection').classList.add('hidden');
       document.getElementById('navLinks').classList.remove('hidden');
+      document.getElementById('navLinks').classList.add('flex');
 
       document.getElementById('studentNameDisplay').innerText = profile.name;
       document.getElementById('studentInfoDisplay').innerText = `${profile.college_name} • ${profile.category.replace('_', ' ').toUpperCase()}`;
 
-      // ആകെ നേടിയ പോയിന്റുകൾ ലോഡ് ചെയ്യുന്നു
       const { data: attempts } = await client
         .from('student_attempts')
         .select('points_earned')
@@ -456,6 +472,19 @@
         .eq('category', currentUserProfile.category);
 
       allCategoryQuestions = questions || [];
+
+      // വിദ്യാർത്ഥിയുടെ കാറ്റഗറിയിലുള്ള സബ്ജക്ടുകൾ മാത്രം ഡ്രോപ്പ്ഡൗണിൽ ഉൾപ്പെടുത്തുന്നു
+      const deptFilter = document.getElementById('deptFilter');
+      deptFilter.innerHTML = '<option value="ALL">All Subjects</option>';
+      
+      const uniqueDepts = [...new Set(allCategoryQuestions.map(q => q.department).filter(Boolean))];
+      uniqueDepts.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.innerText = d.toUpperCase();
+        deptFilter.appendChild(opt);
+      });
+
       onFilterChange();
     }
 
@@ -469,7 +498,6 @@
         );
       }
 
-      // Populate Phase Selector (10 questions per phase)
       const totalPhases = Math.max(1, Math.ceil(filteredQuestions.length / QUESTIONS_PER_PHASE));
       const phaseSelect = document.getElementById('phaseSelect');
       phaseSelect.innerHTML = '';
@@ -525,18 +553,18 @@
 
     function updateTimerUI() {
       const timerText = document.getElementById('timerText');
-      const timerCircle = document.getElementById('timerCircle');
+      const timeProgressBar = document.getElementById('timeProgressBar');
       timerText.innerText = `${timeLeft}s`;
 
-      const strokeDash = (timeLeft / QUESTION_TIME_LIMIT) * 100;
-      timerCircle.setAttribute('stroke-dasharray', `${strokeDash}, 100`);
+      const pct = (timeLeft / QUESTION_TIME_LIMIT) * 100;
+      timeProgressBar.style.width = `${pct}%`;
 
-      if (timeLeft <= 5) {
-        timerCircle.setAttribute('class', 'circle stroke-red-500');
-        timerText.className = 'absolute text-xs font-bold text-red-600 animate-pulse';
+      if (timeLeft <= 7) {
+        timeProgressBar.style.backgroundColor = '#e11d48'; // Rose/Red
+        timerText.className = 'text-sm font-black text-rose-600 w-8 text-right font-mono animate-pulse';
       } else {
-        timerCircle.setAttribute('class', 'circle stroke-indigo-600');
-        timerText.className = 'absolute text-xs font-bold text-slate-700';
+        timeProgressBar.style.backgroundColor = '#4f46e5'; // Indigo
+        timerText.className = 'text-sm font-black text-indigo-600 w-8 text-right font-mono';
       }
     }
 
@@ -545,10 +573,9 @@
       isCurrentAnswered = true;
 
       const q = currentPhaseQuestions[currentQIndex];
-      // Highlight correct option as user ran out of time
       const correctBtn = document.getElementById(`optBtn_${q.correct_option}`);
       if (correctBtn) {
-        correctBtn.className = "w-full p-4 border border-green-600 bg-green-50 text-green-900 font-semibold rounded-xl flex items-center justify-between";
+        correctBtn.className = "w-full p-4 border-2 border-emerald-500 bg-emerald-50/70 text-emerald-950 font-bold rounded-2xl flex items-center justify-between";
       }
 
       document.getElementById('nextBtn').classList.remove('hidden');
@@ -556,7 +583,7 @@
 
     function renderCurrentQuestion() {
       if (currentPhaseQuestions.length === 0) {
-        document.getElementById('questionContainer').innerHTML = "<p class='text-center text-slate-500 py-6'>ഈ വിഷയത്തിൽ ചോദ്യങ്ങൾ ലഭ്യമല്ല.</p>";
+        document.getElementById('questionContainer').innerHTML = "<p class='text-center text-slate-400 py-12 text-sm font-semibold'>ഈ വിഷയത്തിൽ ചോദ്യങ്ങൾ ലഭ്യമല്ല.</p>";
         return;
       }
 
@@ -580,11 +607,11 @@
       opts.forEach(opt => {
         const btn = document.createElement('button');
         btn.id = `optBtn_${opt.key}`;
-        btn.className = "w-full p-4 border border-slate-200 rounded-xl flex items-center justify-between text-left hover:bg-slate-50 transition";
+        btn.className = "w-full p-4 border border-slate-200/90 rounded-2xl flex items-center justify-between text-left hover:bg-slate-50 hover:border-slate-300 transition duration-150 group shadow-sm bg-white";
         btn.onclick = () => selectOption(opt.key, q.correct_option, q.id);
         btn.innerHTML = `
-          <span class="font-bold mr-3 text-slate-500 font-sans">${opt.key}.</span>
-          <span class="flex-1 arabic-text text-xl">${opt.text}</span>
+          <span class="font-extrabold mr-3 text-slate-400 group-hover:text-indigo-600 text-sm font-sans">${opt.key}.</span>
+          <span class="flex-1 arabic-text text-xl md:text-2xl text-slate-800">${opt.text}</span>
         `;
         container.appendChild(btn);
       });
@@ -606,14 +633,13 @@
         document.getElementById('currentScoreDisplay').innerText = totalScore;
       }
 
-      document.getElementById(`optBtn_${correctOpt}`).className = "w-full p-4 border border-green-600 bg-green-50 text-green-900 font-semibold rounded-xl flex items-center justify-between";
+      document.getElementById(`optBtn_${correctOpt}`).className = "w-full p-4 border-2 border-emerald-500 bg-emerald-50/70 text-emerald-950 font-bold rounded-2xl flex items-center justify-between shadow-sm";
       if (!isCorrect) {
-        document.getElementById(`optBtn_${selectedOpt}`).className = "w-full p-4 border border-red-600 bg-red-50 text-red-900 font-semibold rounded-xl flex items-center justify-between";
+        document.getElementById(`optBtn_${selectedOpt}`).className = "w-full p-4 border-2 border-rose-500 bg-rose-50/70 text-rose-950 font-bold rounded-2xl flex items-center justify-between shadow-sm";
       }
 
       document.getElementById('nextBtn').classList.remove('hidden');
 
-      // Record score
       await client.from('student_attempts').insert([{
         user_id: currentUserProfile.id,
         question_id: questionId,
@@ -638,7 +664,7 @@
       const resultCard = document.getElementById('phaseResultCard');
       resultCard.classList.remove('hidden');
 
-      const passThreshold = Math.ceil(currentPhaseQuestions.length * 0.7); // 70% threshold to advance
+      const passThreshold = Math.ceil(currentPhaseQuestions.length * 0.7);
       const isPassed = phaseScore >= passThreshold;
 
       document.getElementById('phaseResultTitle').innerText = isPassed 
@@ -646,7 +672,7 @@
         : `⚠️ Phase ${currentPhase} വീണ്ടും പരിശീലിക്കുക`;
 
       document.getElementById('phaseResultScore').innerHTML = `
-        ഈ ഘട്ടത്തിൽ നിങ്ങളുടെ സ്കോർ: <strong class="text-indigo-600">${phaseScore} / ${currentPhaseQuestions.length}</strong>
+        ഈ ഘട്ടത്തിൽ നിങ്ങളുടെ സ്കോർ: <strong class="text-indigo-600 text-lg">${phaseScore} / ${currentPhaseQuestions.length}</strong>
       `;
 
       const maxPhase = Math.ceil(filteredQuestions.length / QUESTIONS_PER_PHASE);
@@ -673,11 +699,11 @@
       const pgTab = document.getElementById('pgTab');
 
       if (cat === 'degree_first_year') {
-        degTab.className = "px-5 py-2 rounded-xl font-bold bg-indigo-600 text-white transition";
-        pgTab.className = "px-5 py-2 rounded-xl font-bold bg-white border text-slate-600 hover:bg-slate-50 transition";
+        degTab.className = "px-5 py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm";
+        pgTab.className = "px-5 py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition";
       } else {
-        pgTab.className = "px-5 py-2 rounded-xl font-bold bg-indigo-600 text-white transition";
-        degTab.className = "px-5 py-2 rounded-xl font-bold bg-white border text-slate-600 hover:bg-slate-50 transition";
+        pgTab.className = "px-5 py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm";
+        degTab.className = "px-5 py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition";
       }
 
       const body = document.getElementById('leaderboardBody');
@@ -698,12 +724,12 @@
 
       ranks.forEach(r => {
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-50";
+        tr.className = "hover:bg-slate-50 transition";
         tr.innerHTML = `
-          <td class="p-4 font-extrabold text-center text-slate-700">#${r.rank}</td>
+          <td class="p-4 font-black text-center text-slate-700">#${r.rank}</td>
           <td class="p-4 font-bold text-slate-900">${r.name}</td>
-          <td class="p-4 text-slate-500">${r.college_name}</td>
-          <td class="p-4 text-right font-black text-indigo-600">${r.total_points}</td>
+          <td class="p-4 text-slate-500 font-medium">${r.college_name}</td>
+          <td class="p-4 text-right font-black text-indigo-600 text-sm">${r.total_points}</td>
         `;
         body.appendChild(tr);
       });
