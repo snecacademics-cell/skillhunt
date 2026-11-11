@@ -8,6 +8,25 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Supabase JS Library CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .circular-chart {
+      display: block;
+      margin: 0 auto;
+      max-width: 60px;
+      max-height: 60px;
+    }
+    .circle-bg {
+      fill: none;
+      stroke: #e2e8f0;
+      stroke-width: 3.8;
+    }
+    .circle {
+      fill: none;
+      stroke-width: 3.8;
+      stroke-linecap: round;
+      transition: stroke-dasharray 1s linear, stroke 0.3s;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 font-sans antialiased">
 
@@ -28,7 +47,6 @@
     <!-- 1. AUTH SECTION -->
     <section id="authSection" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md border border-slate-200">
       <h2 id="authTitle" class="text-2xl font-bold text-center text-slate-800 mb-6">Student Login</h2>
-      
       <div id="authAlert" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
 
       <!-- LOGIN FORM -->
@@ -38,22 +56,19 @@
           <input type="text" id="loginStudentId" required placeholder="Enter your ID"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
-
         <div>
           <label class="block text-sm font-semibold mb-1">Password</label>
           <input type="password" id="loginPassword" required placeholder="Enter password"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
-
         <button type="submit" id="loginBtn"
           class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition">
           Login
         </button>
       </form>
 
-      <!-- REGISTRATION FORM (STEP-BY-STEP VERIFICATION) -->
+      <!-- REGISTRATION FORM -->
       <div id="registerContainer" class="hidden space-y-4">
-        <!-- Step 1: ID Search -->
         <div id="verifyStep">
           <label class="block text-sm font-semibold mb-1">Enter Student ID / Roll No</label>
           <div class="flex gap-2">
@@ -66,7 +81,6 @@
           </div>
         </div>
 
-        <!-- Step 2: Student Details Card & Confirmation -->
         <div id="studentDetailsCard" class="hidden bg-indigo-50 p-4 rounded-xl border border-indigo-100 space-y-2 text-sm">
           <p class="font-bold text-indigo-950 text-base border-b border-indigo-200 pb-1">വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ</p>
           <div class="grid grid-cols-3 gap-1">
@@ -82,10 +96,9 @@
             <span id="detCategory" class="font-semibold text-slate-800 col-span-2 uppercase"></span>
           </div>
 
-          <!-- Password Setup -->
           <div class="pt-3 border-t border-indigo-200 space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Set Your Password</label>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Set Password</label>
               <input type="password" id="regPassword" placeholder="Minimum 6 characters"
                 class="w-full px-3 py-2 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" />
             </div>
@@ -97,7 +110,6 @@
         </div>
       </div>
 
-      <!-- Mode Toggle -->
       <div class="mt-6 text-center text-sm text-slate-600">
         <span id="toggleText">New student?</span>
         <button type="button" onclick="toggleAuthMode()" id="toggleBtn" class="text-indigo-600 font-bold underline ml-1">
@@ -107,34 +119,87 @@
     </section>
 
     <!-- 2. PRACTICE SECTION -->
-    <section id="practiceSection" class="hidden max-w-2xl mx-auto space-y-6">
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+    <section id="practiceSection" class="hidden max-w-2xl mx-auto space-y-5">
+      <!-- Profile & Score Header -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
         <div>
-          <h2 id="studentNameDisplay" class="text-xl font-bold text-slate-800">Student Name</h2>
-          <p id="studentInfoDisplay" class="text-sm text-slate-500">College • Category</p>
+          <h2 id="studentNameDisplay" class="text-lg md:text-xl font-bold text-slate-800">Student Name</h2>
+          <p id="studentInfoDisplay" class="text-xs md:text-sm text-slate-500">College • Category</p>
         </div>
         <div class="text-right">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Current Score</span>
-          <p id="currentScoreDisplay" class="text-3xl font-extrabold text-indigo-600">0</p>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Score</span>
+          <p id="currentScoreDisplay" class="text-2xl md:text-3xl font-extrabold text-indigo-600">0</p>
         </div>
       </div>
 
+      <!-- Subject & Phase Selector Controls -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-3 items-center justify-between">
+        <!-- Department Filter -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500 uppercase">Subject:</span>
+          <select id="deptFilter" onchange="onFilterChange()" class="px-3 py-1.5 border rounded-lg text-sm font-semibold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="ALL">All Subjects</option>
+            <option value="Nahv">Nahv</option>
+            <option value="swarf">Swarf</option>
+          </select>
+        </div>
+
+        <!-- Phase Selector -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500 uppercase">Phase:</span>
+          <select id="phaseSelect" onchange="onPhaseChange()" class="px-3 py-1.5 border rounded-lg text-sm font-semibold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Question Box -->
       <div id="questionContainer" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
-        <div class="flex justify-between text-sm font-semibold text-slate-400">
-          <span id="qCountDisplay">Question 1</span>
-          <span id="qDeptBadge" class="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full"></span>
+        <div class="flex justify-between items-center border-b pb-4 border-slate-100">
+          <div>
+            <span id="phaseBadge" class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">Phase 1</span>
+            <span id="qCountDisplay" class="text-sm font-semibold text-slate-500 ml-2">Question 1/10</span>
+          </div>
+
+          <!-- Circular Countdown Timer -->
+          <div class="flex items-center gap-2">
+            <div class="relative w-12 h-12 flex items-center justify-center">
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path id="timerCircle" class="circle stroke-indigo-600"
+                  stroke-dasharray="100, 100"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <span id="timerText" class="absolute text-xs font-bold text-slate-700">30s</span>
+            </div>
+          </div>
         </div>
 
         <p id="questionText" class="text-xl font-semibold text-slate-900 leading-relaxed" style="direction: rtl; text-align: right;">
           Question text...
         </p>
 
-        <div class="grid grid-cols-1 gap-3 pt-3" id="optionsContainer"></div>
+        <div class="grid grid-cols-1 gap-3 pt-2" id="optionsContainer"></div>
 
         <button id="nextBtn" onclick="nextQuestion()"
           class="hidden w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">
           Next Question ➔
         </button>
+      </div>
+
+      <!-- Phase Result Card (Shown at the end of each 10 questions) -->
+      <div id="phaseResultCard" class="hidden bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center space-y-4">
+        <h3 id="phaseResultTitle" class="text-2xl font-extrabold text-slate-900">Phase Completed!</h3>
+        <p id="phaseResultScore" class="text-lg text-slate-600"></p>
+        <div class="flex justify-center gap-4 pt-2">
+          <button onclick="retryCurrentPhase()" class="px-5 py-2.5 border border-indigo-600 text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition">
+            🔄 Retry Phase
+          </button>
+          <button id="nextPhaseBtn" onclick="goToNextPhase()" class="px-6 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">
+            Next Phase ➔
+          </button>
+        </div>
       </div>
     </section>
 
@@ -178,13 +243,24 @@
     const SUPABASE_ANON_KEY = "sb_publishable_VG31jRVuAy9Pau8gU7nT9Q_yT5fOb4h";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    const QUESTION_TIME_LIMIT = 30; // 30 Seconds per question
+    const QUESTIONS_PER_PHASE = 10; // 10 questions per Phase
+
     let isRegisterMode = false;
     let verifiedStudent = null;
     let currentUserProfile = null;
-    let practiceQuestions = [];
+    
+    let allCategoryQuestions = [];
+    let filteredQuestions = [];
+    let currentPhase = 1;
+    let currentPhaseQuestions = [];
     let currentQIndex = 0;
-    let currentScore = 0;
+    let phaseScore = 0;
+    let totalScore = 0;
     let isCurrentAnswered = false;
+
+    let timerInterval = null;
+    let timeLeft = QUESTION_TIME_LIMIT;
 
     function switchView(view) {
       document.getElementById('practiceSection').classList.add('hidden');
@@ -231,7 +307,6 @@
       document.getElementById('authAlert').classList.add('hidden');
     }
 
-    // STEP 1: VERIFY STUDENT ID & SHOW DETAILS
     async function verifyStudentId() {
       const sId = document.getElementById('regStudentId').value.trim();
       hideAlert();
@@ -255,18 +330,16 @@
       verifyBtn.disabled = false;
 
       if (error || !eligibleList || eligibleList.length === 0) {
-        showAlert('ഈ സ്റ്റുഡന്റ് ഐഡി രജിസ്ട്രേഷൻ ലിസ്റ്റിൽ കണ്ടെത്താനായില്ല. ദയവായി പരിശോധിക്കുക.');
+        showAlert('ഈ സ്റ്റുഡന്റ് ഐഡി രജിസ്ട്രേഷൻ ലിസ്റ്റിൽ കണ്ടെത്താനായില്ല.');
         return;
       }
 
       const st = eligibleList[0];
-
       if (st.is_registered) {
         showAlert('ഈ ഐഡി ഉപയോഗിച്ച് ഇതിനകം രജിസ്റ്റർ ചെയ്തിട്ടുണ്ട്. ലോഗിൻ ചെയ്യുക.');
         return;
       }
 
-      // Populate details card
       verifiedStudent = st;
       document.getElementById('detName').innerText = st.student_name;
       document.getElementById('detCollege').innerText = st.college_name;
@@ -274,7 +347,6 @@
       document.getElementById('studentDetailsCard').classList.remove('hidden');
     }
 
-    // STEP 2: CONFIRM & COMPLETE REGISTRATION
     async function confirmAndRegister() {
       if (!verifiedStudent) return;
       const pwd = document.getElementById('regPassword').value;
@@ -302,7 +374,6 @@
         return;
       }
 
-      // Add to Profiles
       await client.from('profiles').insert([{
         id: authData.user.id,
         student_id: verifiedStudent.student_id,
@@ -311,11 +382,7 @@
         category: verifiedStudent.category
       }]);
 
-      // Mark registered
-      await client
-        .from('eligible_students')
-        .update({ is_registered: true })
-        .eq('student_id', verifiedStudent.student_id);
+      await client.from('eligible_students').update({ is_registered: true }).eq('student_id', verifiedStudent.student_id);
 
       showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! നിങ്ങൾക്ക് ലോഗിൻ ചെയ്യാം.', false);
       confirmBtn.innerText = 'Confirm & Register';
@@ -324,7 +391,6 @@
       document.getElementById('loginStudentId').value = verifiedStudent.student_id;
     }
 
-    // LOGIN LOGIC
     async function handleLogin(e) {
       e.preventDefault();
       const sId = document.getElementById('loginStudentId').value.trim();
@@ -368,36 +434,135 @@
       document.getElementById('studentNameDisplay').innerText = profile.name;
       document.getElementById('studentInfoDisplay').innerText = `${profile.college_name} • ${profile.category.replace('_', ' ').toUpperCase()}`;
 
+      // ആകെ നേടിയ പോയിന്റുകൾ ലോഡ് ചെയ്യുന്നു
+      const { data: attempts } = await client
+        .from('student_attempts')
+        .select('points_earned')
+        .eq('user_id', profile.id);
+
+      totalScore = (attempts || []).reduce((acc, curr) => acc + (curr.points_earned || 0), 0);
+      document.getElementById('currentScoreDisplay').innerText = totalScore;
+
       switchView('practice');
-      loadPracticeQuestions();
+      loadAllQuestions();
     }
 
-    async function loadPracticeQuestions() {
+    async function loadAllQuestions() {
       const { data: questions } = await client
         .from('questions')
         .select('*')
-        .eq('category', currentUserProfile.category)
-        .limit(200);
+        .eq('category', currentUserProfile.category);
 
-      practiceQuestions = questions || [];
+      allCategoryQuestions = questions || [];
+      onFilterChange();
+    }
+
+    function onFilterChange() {
+      const selectedDept = document.getElementById('deptFilter').value;
+      if (selectedDept === 'ALL') {
+        filteredQuestions = allCategoryQuestions;
+      } else {
+        filteredQuestions = allCategoryQuestions.filter(q => 
+          (q.department || '').toLowerCase() === selectedDept.toLowerCase()
+        );
+      }
+
+      // Populate Phase Selector (10 questions per phase)
+      const totalPhases = Math.max(1, Math.ceil(filteredQuestions.length / QUESTIONS_PER_PHASE));
+      const phaseSelect = document.getElementById('phaseSelect');
+      phaseSelect.innerHTML = '';
+
+      for (let p = 1; p <= totalPhases; p++) {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.innerText = `Phase ${p} (${(p - 1) * QUESTIONS_PER_PHASE + 1}-${Math.min(p * QUESTIONS_PER_PHASE, filteredQuestions.length)})`;
+        phaseSelect.appendChild(opt);
+      }
+
+      currentPhase = 1;
+      phaseSelect.value = 1;
+      startPhase(1);
+    }
+
+    function onPhaseChange() {
+      const selectedPhase = parseInt(document.getElementById('phaseSelect').value, 10);
+      startPhase(selectedPhase);
+    }
+
+    function startPhase(phaseNum) {
+      currentPhase = phaseNum;
+      document.getElementById('phaseSelect').value = phaseNum;
+      document.getElementById('phaseBadge').innerText = `Phase ${phaseNum}`;
+
+      const startIdx = (phaseNum - 1) * QUESTIONS_PER_PHASE;
+      currentPhaseQuestions = filteredQuestions.slice(startIdx, startIdx + QUESTIONS_PER_PHASE);
+
       currentQIndex = 0;
-      currentScore = 0;
-      document.getElementById('currentScoreDisplay').innerText = currentScore;
+      phaseScore = 0;
+      document.getElementById('questionContainer').classList.remove('hidden');
+      document.getElementById('phaseResultCard').classList.add('hidden');
+
       renderCurrentQuestion();
     }
 
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = QUESTION_TIME_LIMIT;
+      updateTimerUI();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerUI();
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          handleTimeOut();
+        }
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      const timerText = document.getElementById('timerText');
+      const timerCircle = document.getElementById('timerCircle');
+      timerText.innerText = `${timeLeft}s`;
+
+      const strokeDash = (timeLeft / QUESTION_TIME_LIMIT) * 100;
+      timerCircle.setAttribute('stroke-dasharray', `${strokeDash}, 100`);
+
+      if (timeLeft <= 5) {
+        timerCircle.setAttribute('class', 'circle stroke-red-500');
+        timerText.className = 'absolute text-xs font-bold text-red-600 animate-pulse';
+      } else {
+        timerCircle.setAttribute('class', 'circle stroke-indigo-600');
+        timerText.className = 'absolute text-xs font-bold text-slate-700';
+      }
+    }
+
+    function handleTimeOut() {
+      if (isCurrentAnswered) return;
+      isCurrentAnswered = true;
+
+      const q = currentPhaseQuestions[currentQIndex];
+      // Highlight correct option as user ran out of time
+      const correctBtn = document.getElementById(`optBtn_${q.correct_option}`);
+      if (correctBtn) {
+        correctBtn.className = "w-full p-4 border border-green-600 bg-green-50 text-green-900 font-semibold rounded-xl flex items-center justify-between";
+      }
+
+      document.getElementById('nextBtn').classList.remove('hidden');
+    }
+
     function renderCurrentQuestion() {
-      if (practiceQuestions.length === 0) {
-        document.getElementById('questionContainer').innerHTML = "<p class='text-center text-slate-500 py-6'>നിലവിൽ ചോദ്യങ്ങൾ ലഭ്യമല്ല.</p>";
+      if (currentPhaseQuestions.length === 0) {
+        document.getElementById('questionContainer').innerHTML = "<p class='text-center text-slate-500 py-6'>ഈ വിഷയത്തിൽ ചോദ്യങ്ങൾ ലഭ്യമല്ല.</p>";
         return;
       }
 
-      const q = practiceQuestions[currentQIndex];
+      const q = currentPhaseQuestions[currentQIndex];
       isCurrentAnswered = false;
       document.getElementById('nextBtn').classList.add('hidden');
 
-      document.getElementById('qCountDisplay').innerText = `Question ${currentQIndex + 1} of ${practiceQuestions.length}`;
-      document.getElementById('qDeptBadge').innerText = q.department || 'General';
+      document.getElementById('qCountDisplay').innerText = `Question ${currentQIndex + 1}/${currentPhaseQuestions.length}`;
       document.getElementById('questionText').innerText = q.question_text;
 
       const opts = [
@@ -421,18 +586,22 @@
         `;
         container.appendChild(btn);
       });
+
+      startTimer();
     }
 
     async function selectOption(selectedOpt, correctOpt, questionId) {
       if (isCurrentAnswered) return;
       isCurrentAnswered = true;
+      clearInterval(timerInterval);
 
       const isCorrect = selectedOpt === correctOpt;
       const points = isCorrect ? 1 : 0;
 
       if (isCorrect) {
-        currentScore += 1;
-        document.getElementById('currentScoreDisplay').innerText = currentScore;
+        phaseScore++;
+        totalScore++;
+        document.getElementById('currentScoreDisplay').innerText = totalScore;
       }
 
       document.getElementById(`optBtn_${correctOpt}`).className = "w-full p-4 border border-green-600 bg-green-50 text-green-900 font-semibold rounded-xl flex items-center justify-between";
@@ -442,6 +611,7 @@
 
       document.getElementById('nextBtn').classList.remove('hidden');
 
+      // Record score
       await client.from('student_attempts').insert([{
         user_id: currentUserProfile.id,
         question_id: questionId,
@@ -452,12 +622,48 @@
     }
 
     function nextQuestion() {
-      if (currentQIndex + 1 < practiceQuestions.length) {
+      clearInterval(timerInterval);
+      if (currentQIndex + 1 < currentPhaseQuestions.length) {
         currentQIndex++;
         renderCurrentQuestion();
       } else {
-        alert("നിങ്ങൾ ഈ സെഷനിലെ എല്ലാ ചോദ്യങ്ങളും പൂർത്തിയാക്കി!");
+        showPhaseResult();
       }
+    }
+
+    function showPhaseResult() {
+      document.getElementById('questionContainer').classList.add('hidden');
+      const resultCard = document.getElementById('phaseResultCard');
+      resultCard.classList.remove('hidden');
+
+      const passThreshold = Math.ceil(currentPhaseQuestions.length * 0.7); // 70% threshold to advance
+      const isPassed = phaseScore >= passThreshold;
+
+      document.getElementById('phaseResultTitle').innerText = isPassed 
+        ? `🎉 Phase ${currentPhase} പൂർത്തിയായി!` 
+        : `⚠️ Phase ${currentPhase} വീണ്ടും പരിശീലിക്കുക`;
+
+      document.getElementById('phaseResultScore').innerHTML = `
+        ഈ ഘട്ടത്തിൽ നിങ്ങളുടെ സ്കോർ: <strong class="text-indigo-600">${phaseScore} / ${currentPhaseQuestions.length}</strong>
+      `;
+
+      const maxPhase = Math.ceil(filteredQuestions.length / QUESTIONS_PER_PHASE);
+      const nextBtn = document.getElementById('nextPhaseBtn');
+
+      if (currentPhase < maxPhase) {
+        nextBtn.classList.remove('hidden');
+        nextBtn.innerText = isPassed ? `Start Phase ${currentPhase + 1} ➔` : `Skip to Phase ${currentPhase + 1} ➔`;
+      } else {
+        nextBtn.classList.add('hidden');
+      }
+    }
+
+    function retryCurrentPhase() {
+      startPhase(currentPhase);
+    }
+
+    function goToNextPhase() {
+      startPhase(currentPhase + 1);
     }
 
     async function loadLeaderboard(cat) {
