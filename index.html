@@ -189,17 +189,18 @@
       hideAlert();
 
       if (isRegisterMode) {
-        // 1. Verify eligibility
-        const { data: eligible, error: eligErr } = await client
+        // 1. Verify eligibility (single() ന് പകരം array ആയി എടുക്കുന്നു)
+        const { data: eligibleList, error: eligErr } = await client
           .from('eligible_students')
           .select('*')
-          .eq('student_id', sId)
-          .single();
+          .eq('student_id', sId);
 
-        if (eligErr || !eligible) {
+        if (eligErr || !eligibleList || eligibleList.length === 0) {
           showAlert('ഈ സ്റ്റുഡന്റ് ഐഡി രജിസ്ട്രേഷൻ ലിസ്റ്റിൽ കണ്ടെത്താനായില്ല.');
           return;
         }
+
+        const eligible = eligibleList[0];
 
         if (eligible.is_registered) {
           showAlert('ഈ ഐഡി ഉപയോഗിച്ച് ഇതിനകം രജിസ്റ്റർ ചെയ്തിട്ടുണ്ട്. ലോഗിൻ ചെയ്യുക.');
@@ -230,6 +231,8 @@
 
         showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! ലോഗിൻ ചെയ്യാം.', false);
         toggleAuthMode();
+
+      }
 
       } else {
         // Sign in
