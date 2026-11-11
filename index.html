@@ -27,7 +27,7 @@
       font-family: 'Amiri', serif;
       direction: rtl;
       text-align: right;
-      line-height: 1.9;
+      line-height: 2;
     }
     .smooth-timer {
       transition: width 1s linear, background-color 0.5s ease;
@@ -36,73 +36,71 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 antialiased flex flex-col justify-between">
 
-  <!-- Mobile-First Responsive Header -->
-  <header class="bg-indigo-950 text-white shadow-md sticky top-0 z-50 border-b border-indigo-900/40">
-    <div class="max-w-4xl mx-auto px-3 py-2.5 sm:px-4 sm:py-3">
+  <!-- Clean Mobile Header (No text overlaps) -->
+  <header class="bg-indigo-950 text-white shadow-md sticky top-0 z-50 border-b border-indigo-900/60">
+    <div class="max-w-3xl mx-auto px-4 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
       
-      <div class="flex items-center justify-between gap-2">
-        <!-- Logo & Title -->
-        <div class="flex items-center gap-2.5 min-w-0">
-          <img src="logo.png" alt="Logo" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135810.png';" class="w-8 h-8 sm:w-9 sm:h-9 object-contain rounded-lg bg-white/10 p-0.5 shrink-0" />
-          <div class="truncate">
-            <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-white leading-tight truncate">Skill Hunt</h1>
-            <p class="text-indigo-300 font-semibold text-[9px] sm:text-[10px] truncate">Scholarship Exam Portal</p>
+      <!-- Logo & Title -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <img src="logo.png" alt="Logo" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135810.png';" class="w-8 h-8 object-contain rounded-lg bg-white/10 p-0.5 shrink-0" />
+          <div>
+            <h1 class="font-extrabold text-base tracking-tight text-white leading-none">Skill Hunt</h1>
+            <p class="text-indigo-300 font-semibold text-[10px] mt-0.5">Scholarship Portal</p>
           </div>
         </div>
 
-        <!-- Action / Nav buttons -->
-        <div class="flex items-center gap-1.5 shrink-0">
-          <button id="installAppBtn" onclick="installAppPrompt()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-lg transition flex items-center gap-1">
-            <span>📲</span> <span class="hidden sm:inline">Install</span>
-          </button>
+        <button id="installAppBtn" onclick="installAppPrompt()" class="hidden sm:hidden bg-emerald-600 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg">
+          📲 Install
+        </button>
+      </div>
 
-          <div id="navLinks" class="hidden items-center gap-1">
-            <button onclick="switchView('practice')" class="px-2 sm:px-2.5 py-1 rounded-md text-xs font-bold hover:bg-white/10 text-slate-200 transition">Practice</button>
-            <button onclick="switchView('leaderboard')" class="px-2 sm:px-2.5 py-1 rounded-md text-xs font-bold hover:bg-white/10 text-slate-200 transition">Leaderboard</button>
-            <button onclick="logout()" class="px-2 sm:px-2.5 py-1 rounded-md text-xs font-bold text-rose-300 hover:bg-rose-500/20 transition">Logout</button>
-          </div>
-        </div>
+      <!-- Navigation Links -->
+      <div id="navLinks" class="hidden items-center justify-between sm:justify-end gap-1.5 pt-1.5 sm:pt-0 border-t border-indigo-900/40 sm:border-t-0 text-xs font-bold">
+        <button onclick="switchView('dashboard')" class="flex-1 sm:flex-none text-center px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition">Home</button>
+        <button onclick="switchView('leaderboard')" class="flex-1 sm:flex-none text-center px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition">Leaderboard</button>
+        <button onclick="logout()" class="px-3 py-1.5 rounded-lg text-rose-300 hover:bg-rose-500/20 transition">Logout</button>
       </div>
 
     </div>
   </header>
 
-  <main class="max-w-3xl w-full mx-auto p-3 sm:p-4 my-auto">
+  <main class="max-w-2xl w-full mx-auto p-4 my-auto">
 
     <!-- 1. AUTH SECTION -->
-    <section id="authSection" class="max-w-md mx-auto bg-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100">
-      <div class="text-center mb-5">
-        <h2 id="authTitle" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Student Login</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Skill Hunt Scholarship Examination</p>
+    <section id="authSection" class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100">
+      <div class="text-center mb-6">
+        <h2 id="authTitle" class="text-2xl font-black text-slate-900 tracking-tight">Student Login</h2>
+        <p class="text-xs text-slate-500 mt-1">Skill Hunt Scholarship Examination</p>
       </div>
       
       <div id="authAlert" class="hidden p-3 mb-4 text-xs font-semibold rounded-xl leading-relaxed"></div>
 
       <!-- LOGIN FORM -->
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5">
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Student ID / Roll No</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Student ID / Roll No</label>
           <input type="text" id="loginStudentId" required placeholder="Enter ID number"
-            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
+            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Password</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Password</label>
           <input type="password" id="loginPassword" required placeholder="Enter password"
-            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
+            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
         </div>
         <button type="submit" id="loginBtn"
-          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 sm:py-3 rounded-xl shadow-md shadow-indigo-600/30 transition text-sm">
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md shadow-indigo-600/30 transition text-sm">
           Login to Dashboard
         </button>
       </form>
 
       <!-- REGISTRATION STEP-BY-STEP -->
-      <div id="registerContainer" class="hidden space-y-3.5">
+      <div id="registerContainer" class="hidden space-y-4">
         <div id="verifyStep">
-          <label class="block text-[11px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Student ID / Roll No</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Student ID / Roll No</label>
           <div class="flex gap-2">
             <input type="text" id="regStudentId" placeholder="e.g. 520211"
-              class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
+              class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
             <button type="button" onclick="verifyStudentId()" id="verifyBtn"
               class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow transition shrink-0">
               Verify
@@ -110,7 +108,7 @@
           </div>
         </div>
 
-        <div id="studentDetailsCard" class="hidden bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-100 space-y-1.5 text-xs">
+        <div id="studentDetailsCard" class="hidden bg-indigo-50/70 p-4 rounded-2xl border border-indigo-100 space-y-2 text-xs">
           <p class="font-extrabold text-indigo-950 text-xs border-b border-indigo-200/80 pb-1">വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ</p>
           <div class="grid grid-cols-3 gap-1 pt-1">
             <span class="text-slate-500 font-medium">Name:</span>
@@ -125,14 +123,14 @@
             <span id="detCategory" class="font-bold text-indigo-700 col-span-2 uppercase"></span>
           </div>
 
-          <div class="pt-2.5 border-t border-indigo-200/80 space-y-2">
+          <div class="pt-3 border-t border-indigo-200/80 space-y-2">
             <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">Set Password</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Set Password</label>
               <input type="password" id="regPassword" placeholder="Minimum 6 characters"
                 class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-xs" />
             </div>
             <button type="button" onclick="confirmAndRegister()" id="confirmRegBtn"
-              class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl shadow transition text-xs">
+              class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow transition text-xs">
               Confirm & Register
             </button>
           </div>
@@ -147,55 +145,76 @@
       </div>
     </section>
 
-    <!-- 2. PRACTICE SECTION -->
-    <section id="practiceSection" class="hidden space-y-3.5">
+    <!-- 2. STUDENT HOME / SELECTION DASHBOARD (Shown immediately after login) -->
+    <section id="dashboardSection" class="hidden space-y-4">
       
-      <!-- Top Profile & Score Banner -->
-      <div class="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200 flex justify-between items-center">
+      <!-- Student Profile Card -->
+      <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 flex justify-between items-center">
         <div class="min-w-0 pr-2">
-          <h2 id="studentNameDisplay" class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight truncate">Student Name</h2>
-          <p id="studentInfoDisplay" class="text-[11px] sm:text-xs text-slate-500 font-medium truncate mt-0.5">College • Category</p>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">Logged In</span>
+          <h2 id="studentNameDisplay" class="text-lg font-extrabold text-slate-900 tracking-tight truncate mt-1">Student Name</h2>
+          <p id="studentInfoDisplay" class="text-xs text-slate-500 font-medium truncate mt-0.5">College • Category</p>
         </div>
-        <div class="text-right bg-indigo-50/80 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border border-indigo-100 shrink-0">
-          <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-indigo-500">Score</span>
-          <p id="currentScoreDisplay" class="text-xl sm:text-2xl font-black text-indigo-700 leading-none mt-0.5">0</p>
-        </div>
-      </div>
-
-      <!-- Controls: Subject & Phase Bar -->
-      <div class="bg-white p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-1.5 flex-1 min-w-0">
-          <span class="text-[10px] sm:text-[11px] font-extrabold text-slate-400 uppercase tracking-wider shrink-0">Subject</span>
-          <select id="deptFilter" onchange="onFilterChange()" 
-            class="w-full max-w-[130px] sm:max-w-none px-2 py-1 sm:py-1.5 border border-slate-200 rounded-lg text-xs font-bold bg-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-600">
-          </select>
-        </div>
-
-        <div class="flex items-center gap-1.5 shrink-0">
-          <span class="text-[10px] sm:text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Phase</span>
-          <select id="phaseSelect" onchange="onPhaseChange()" 
-            class="px-2 py-1 sm:py-1.5 border border-slate-200 rounded-lg text-xs font-bold bg-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-600">
-          </select>
+        <div class="text-right bg-indigo-50/80 px-4 py-2.5 rounded-2xl border border-indigo-100 shrink-0">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Total Score</span>
+          <p id="currentScoreDisplay" class="text-2xl font-black text-indigo-700 leading-none mt-0.5">0</p>
         </div>
       </div>
 
-      <!-- Practice Question Box -->
-      <div id="questionContainer" class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+      <!-- Practice Selection Card -->
+      <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-5">
+        <div>
+          <h3 class="text-base font-extrabold text-slate-900">Start Practice Session</h3>
+          <p class="text-xs text-slate-500 mt-0.5">വിഷയവും ഘട്ടവും തിരഞ്ഞെടുത്ത ശേഷം പരിശീലനം ആരംഭിക്കുക</p>
+        </div>
+
+        <div class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Select Subject</label>
+            <select id="deptFilter" onchange="onFilterChange()" 
+              class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Select Phase (10 Questions)</label>
+            <select id="phaseSelect" onchange="onPhaseChange()" 
+              class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
+            </select>
+          </div>
+        </div>
+
+        <button onclick="launchQuizSession()" 
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-indigo-600/30 transition text-sm flex items-center justify-center gap-2">
+          <span>Start Practice</span> <span>🚀</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- 3. QUIZ SCREEN (Only visible when user clicks 'Start Practice') -->
+    <section id="quizScreenSection" class="hidden space-y-4">
+      
+      <div class="flex items-center justify-between px-1">
+        <button onclick="switchView('dashboard')" class="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1">
+          ← Back to Home
+        </button>
+        <span id="quizPhaseIndicator" class="text-xs font-extrabold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full">Phase 1</span>
+      </div>
+
+      <div id="questionContainer" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
         
         <!-- Timer Bar -->
-        <div class="w-full bg-slate-100 h-1.5 sm:h-2 relative overflow-hidden">
+        <div class="w-full bg-slate-100 h-2 relative overflow-hidden">
           <div id="timeProgressBar" class="h-full bg-indigo-600 smooth-timer" style="width: 100%;"></div>
         </div>
 
-        <div class="p-4 sm:p-7 space-y-4 sm:space-y-6">
+        <div class="p-5 sm:p-7 space-y-5">
           <div class="flex justify-between items-center text-xs font-bold">
-            <div class="flex items-center gap-1.5">
-              <span id="phaseBadge" class="bg-indigo-100 text-indigo-800 px-2 py-0.5 sm:px-3 sm:py-1 rounded-md text-[10px] sm:text-[11px] font-black uppercase">Phase 1</span>
-              <span id="qCountDisplay" class="text-slate-400 text-[11px] sm:text-xs">Question 1/10</span>
-            </div>
+            <span id="qCountDisplay" class="text-slate-400">Question 1/10</span>
             <div class="flex items-center gap-1 font-bold">
               <span class="text-slate-400 text-[10px]">TIME:</span>
-              <span id="timerText" class="text-xs sm:text-sm font-black text-indigo-600 font-mono">30s</span>
+              <span id="timerText" class="text-sm font-black text-indigo-600 font-mono">30s</span>
             </div>
           </div>
 
@@ -210,17 +229,17 @@
           <div class="grid grid-cols-1 gap-2.5" id="optionsContainer"></div>
 
           <button id="nextBtn" onclick="nextQuestion()"
-            class="hidden w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl sm:rounded-2xl shadow-md shadow-indigo-600/30 transition text-xs sm:text-sm">
+            class="hidden w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-md shadow-indigo-600/30 transition text-sm">
             Next Question ➔
           </button>
         </div>
       </div>
 
       <!-- Phase Result Summary Card -->
-      <div id="phaseResultCard" class="hidden bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200 text-center space-y-4">
-        <div class="text-3xl">🎯</div>
+      <div id="phaseResultCard" class="hidden bg-white p-7 rounded-3xl shadow-sm border border-slate-200 text-center space-y-4">
+        <div class="text-4xl">🎯</div>
         <div>
-          <h3 id="phaseResultTitle" class="text-xl sm:text-2xl font-black text-slate-900">Phase Complete!</h3>
+          <h3 id="phaseResultTitle" class="text-xl font-black text-slate-900">Phase Complete!</h3>
           <p id="phaseResultScore" class="text-xs sm:text-sm text-slate-600 mt-1 font-medium"></p>
         </div>
         <div class="flex justify-center gap-2 pt-2">
@@ -230,50 +249,49 @@
           <button id="nextPhaseBtn" onclick="goToNextPhase()" class="px-5 py-2 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 shadow transition">
             Next Phase ➔
           </button>
+          <button onclick="switchView('dashboard')" class="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs hover:bg-slate-200 transition">
+            Home
+          </button>
         </div>
       </div>
 
     </section>
 
-    <!-- 3. LEADERBOARD SECTION (Mobile Responsive Table) -->
+    <!-- 4. LEADERBOARD SECTION -->
     <section id="leaderboardSection" class="hidden space-y-4">
       <div class="text-center space-y-0.5">
         <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">🏆 Leaderboard</h2>
-        <p class="text-[11px] sm:text-xs text-slate-500 font-medium">Rankings updated automatically from practice attempts</p>
+        <p class="text-xs text-slate-500 font-medium">Rankings based on practice scores</p>
       </div>
 
-      <!-- Category Tabs -->
       <div class="flex justify-center gap-2">
         <button id="degTab" onclick="loadLeaderboard('degree_first_year')"
-          class="flex-1 max-w-[150px] py-1.5 sm:py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm text-center">
+          class="flex-1 max-w-[150px] py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm text-center">
           Degree 1st Year
         </button>
         <button id="pgTab" onclick="loadLeaderboard('pg_first_year')"
-          class="flex-1 max-w-[150px] py-1.5 sm:py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition text-center">
+          class="flex-1 max-w-[150px] py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition text-center">
           PG 1st Year
         </button>
       </div>
 
-      <!-- Mobile Friendly Table Box -->
-      <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse min-w-full">
-            <thead>
-              <tr class="bg-slate-50 border-b border-slate-100 text-slate-400 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider">
-                <th class="py-3 px-3 text-center w-12 sm:w-16">Rank</th>
-                <th class="py-3 px-3">Student & College</th>
-                <th class="py-3 px-3 text-right w-16 sm:w-24">Points</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboardBody" class="divide-y divide-slate-100 text-xs"></tbody>
-          </table>
-        </div>
+      <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        <table class="w-full text-left border-collapse min-w-full">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-100 text-slate-400 text-[10px] font-extrabold uppercase tracking-wider">
+              <th class="py-3 px-3.5 text-center w-12">Rank</th>
+              <th class="py-3 px-3">Student & College</th>
+              <th class="py-3 px-3.5 text-right w-16">Points</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody" class="divide-y divide-slate-100 text-xs"></tbody>
+        </table>
       </div>
     </section>
 
   </main>
 
-  <footer class="py-3 text-center text-slate-400 text-[10px] sm:text-xs">
+  <footer class="py-3 text-center text-slate-400 text-[10px]">
     Skill Hunt Examination Platform • Academic Cell
   </footer>
 
@@ -301,7 +319,7 @@
     let timerInterval = null;
     let timeLeft = QUESTION_TIME_LIMIT;
 
-    // Persistent login check
+    // Check login state
     window.addEventListener('DOMContentLoaded', async () => {
       const { data: { session } } = await client.auth.getSession();
       if (session && session.user) {
@@ -311,8 +329,10 @@
 
     client.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
+        clearInterval(timerInterval);
         document.getElementById('authSection').classList.remove('hidden');
-        document.getElementById('practiceSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.add('hidden');
+        document.getElementById('quizScreenSection').classList.add('hidden');
         document.getElementById('leaderboardSection').classList.add('hidden');
         document.getElementById('navLinks').classList.add('hidden');
         document.getElementById('navLinks').classList.remove('flex');
@@ -329,7 +349,7 @@
 
     async function installAppPrompt() {
       if (!deferredPrompt) {
-        alert("നിങ്ങളുടെ മൊബൈൽ ബ്രൗസർ മെനുവിൽ (3 ഡോട്ട്സ്) നിന്ന് 'Add to Home screen' ക്ലിക്ക് ചെയ്തും ഇൻസ്റ്റാൾ ചെയ്യാം.");
+        alert("ബ്രൗസർ മെനുവിൽ നിന്ന് (3 ഡോട്ട്സ്) 'Add to Home screen' ക്ലിക്ക് ചെയ്തും ഇൻസ്റ്റാൾ ചെയ്യാം.");
         return;
       }
       deferredPrompt.prompt();
@@ -341,11 +361,16 @@
     }
 
     function switchView(view) {
-      document.getElementById('practiceSection').classList.add('hidden');
+      clearInterval(timerInterval);
+      document.getElementById('authSection').classList.add('hidden');
+      document.getElementById('dashboardSection').classList.add('hidden');
+      document.getElementById('quizScreenSection').classList.add('hidden');
       document.getElementById('leaderboardSection').classList.add('hidden');
 
-      if (view === 'practice') {
-        document.getElementById('practiceSection').classList.remove('hidden');
+      if (view === 'dashboard') {
+        document.getElementById('dashboardSection').classList.remove('hidden');
+      } else if (view === 'quiz') {
+        document.getElementById('quizScreenSection').classList.remove('hidden');
       } else if (view === 'leaderboard') {
         document.getElementById('leaderboardSection').classList.remove('hidden');
         loadLeaderboard('degree_first_year');
@@ -462,7 +487,7 @@
 
       await client.from('eligible_students').update({ is_registered: true }).eq('student_id', verifiedStudent.student_id);
 
-      showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! നിങ്ങൾക്ക് ലോഗിൻ ചെയ്യാം.', false);
+      showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! ലോഗിൻ ചെയ്യാം.', false);
       confirmBtn.innerText = 'Confirm & Register';
       confirmBtn.disabled = false;
       toggleAuthMode();
@@ -513,6 +538,7 @@
       document.getElementById('studentNameDisplay').innerText = profile.name;
       document.getElementById('studentInfoDisplay').innerText = `${profile.college_name} • ${profile.category.replace('_', ' ').toUpperCase()}`;
 
+      // Load total points
       const { data: attempts } = await client
         .from('student_attempts')
         .select('points_earned')
@@ -521,7 +547,8 @@
       totalScore = (attempts || []).reduce((acc, curr) => acc + (curr.points_earned || 0), 0);
       document.getElementById('currentScoreDisplay').innerText = totalScore;
 
-      switchView('practice');
+      // Navigate to Home Dashboard (Not directly to quiz)
+      switchView('dashboard');
       loadAllQuestions();
     }
 
@@ -534,7 +561,7 @@
       allCategoryQuestions = questions || [];
 
       const deptFilter = document.getElementById('deptFilter');
-      deptFilter.innerHTML = '<option value="ALL">All</option>';
+      deptFilter.innerHTML = '<option value="ALL">All Subjects</option>';
       
       const uniqueDepts = [...new Set(allCategoryQuestions.map(q => q.department).filter(Boolean))];
       uniqueDepts.forEach(d => {
@@ -564,24 +591,28 @@
       for (let p = 1; p <= totalPhases; p++) {
         const opt = document.createElement('option');
         opt.value = p;
-        opt.innerText = `P-${p} (${(p - 1) * QUESTIONS_PER_PHASE + 1}-${Math.min(p * QUESTIONS_PER_PHASE, filteredQuestions.length)})`;
+        opt.innerText = `Phase ${p} (${(p - 1) * QUESTIONS_PER_PHASE + 1}-${Math.min(p * QUESTIONS_PER_PHASE, filteredQuestions.length)})`;
         phaseSelect.appendChild(opt);
       }
 
       currentPhase = 1;
       phaseSelect.value = 1;
-      startPhase(1);
     }
 
     function onPhaseChange() {
-      const selectedPhase = parseInt(document.getElementById('phaseSelect').value, 10);
-      startPhase(selectedPhase);
+      currentPhase = parseInt(document.getElementById('phaseSelect').value, 10);
+    }
+
+    // Explicit Start Action
+    function launchQuizSession() {
+      currentPhase = parseInt(document.getElementById('phaseSelect').value, 10) || 1;
+      startPhase(currentPhase);
+      switchView('quiz');
     }
 
     function startPhase(phaseNum) {
       currentPhase = phaseNum;
-      document.getElementById('phaseSelect').value = phaseNum;
-      document.getElementById('phaseBadge').innerText = `Phase ${phaseNum}`;
+      document.getElementById('quizPhaseIndicator').innerText = `Phase ${phaseNum}`;
 
       const startIdx = (phaseNum - 1) * QUESTIONS_PER_PHASE;
       currentPhaseQuestions = filteredQuestions.slice(startIdx, startIdx + QUESTIONS_PER_PHASE);
@@ -620,10 +651,10 @@
 
       if (timeLeft <= 7) {
         timeProgressBar.style.backgroundColor = '#e11d48';
-        timerText.className = 'text-xs sm:text-sm font-black text-rose-600 font-mono animate-pulse';
+        timerText.className = 'text-sm font-black text-rose-600 font-mono animate-pulse';
       } else {
         timeProgressBar.style.backgroundColor = '#4f46e5';
-        timerText.className = 'text-xs sm:text-sm font-black text-indigo-600 font-mono';
+        timerText.className = 'text-sm font-black text-indigo-600 font-mono';
       }
     }
 
@@ -650,7 +681,7 @@
       isCurrentAnswered = false;
       document.getElementById('nextBtn').classList.add('hidden');
 
-      document.getElementById('qCountDisplay').innerText = `Q ${currentQIndex + 1}/${currentPhaseQuestions.length}`;
+      document.getElementById('qCountDisplay').innerText = `Question ${currentQIndex + 1}/${currentPhaseQuestions.length}`;
       document.getElementById('questionText').innerText = q.question_text;
 
       const opts = [
@@ -758,11 +789,11 @@
       const pgTab = document.getElementById('pgTab');
 
       if (cat === 'degree_first_year') {
-        degTab.className = "flex-1 max-w-[150px] py-1.5 sm:py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm text-center";
-        pgTab.className = "flex-1 max-w-[150px] py-1.5 sm:py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition text-center";
+        degTab.className = "flex-1 max-w-[150px] py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm text-center";
+        pgTab.className = "flex-1 max-w-[150px] py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition text-center";
       } else {
-        pgTab.className = "flex-1 max-w-[150px] py-1.5 sm:py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm text-center";
-        degTab.className = "flex-1 max-w-[150px] py-1.5 sm:py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition text-center";
+        pgTab.className = "flex-1 max-w-[150px] py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white transition shadow-sm text-center";
+        degTab.className = "flex-1 max-w-[150px] py-2 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition text-center";
       }
 
       const body = document.getElementById('leaderboardBody');
@@ -785,12 +816,12 @@
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50 transition";
         tr.innerHTML = `
-          <td class="py-3 px-3 font-black text-center text-slate-700 text-xs sm:text-sm">#${r.rank}</td>
+          <td class="py-3 px-3.5 font-black text-center text-slate-700 text-xs sm:text-sm">#${r.rank}</td>
           <td class="py-3 px-3">
             <div class="font-bold text-slate-900 text-xs sm:text-sm leading-tight">${r.name}</div>
             <div class="text-[10px] sm:text-xs text-slate-500 font-medium leading-tight mt-0.5">${r.college_name}</div>
           </td>
-          <td class="py-3 px-3 text-right font-black text-indigo-600 text-xs sm:text-sm">${r.total_points}</td>
+          <td class="py-3 px-3.5 text-right font-black text-indigo-600 text-xs sm:text-sm">${r.total_points}</td>
         `;
         body.appendChild(tr);
       });
