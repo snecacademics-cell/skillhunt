@@ -25,7 +25,7 @@
 
   <main class="max-w-4xl mx-auto p-4 mt-6">
 
-    <!-- 1. AUTH SECTION (LOGIN / REGISTER) -->
+    <!-- 1. AUTH SECTION -->
     <section id="authSection" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md border border-slate-200">
       <h2 id="authTitle" class="text-2xl font-bold text-center text-slate-800 mb-6">Student Login</h2>
       
@@ -52,7 +52,7 @@
 
       <div class="mt-6 text-center text-sm text-slate-600">
         <span id="toggleText">New student?</span>
-        <button onclick="toggleAuthMode()" id="toggleBtn" class="text-indigo-600 font-bold underline ml-1">
+        <button type="button" onclick="toggleAuthMode()" id="toggleBtn" class="text-indigo-600 font-bold underline ml-1">
           Register now
         </button>
       </div>
@@ -60,7 +60,6 @@
 
     <!-- 2. PRACTICE SECTION -->
     <section id="practiceSection" class="hidden max-w-2xl mx-auto space-y-6">
-      <!-- Profile Card -->
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
         <div>
           <h2 id="studentNameDisplay" class="text-xl font-bold text-slate-800">Student Name</h2>
@@ -72,7 +71,6 @@
         </div>
       </div>
 
-      <!-- Question Card -->
       <div id="questionContainer" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
         <div class="flex justify-between text-sm font-semibold text-slate-400">
           <span id="qCountDisplay">Question 1</span>
@@ -80,12 +78,10 @@
         </div>
 
         <p id="questionText" class="text-xl font-semibold text-slate-900 leading-relaxed" style="direction: rtl; text-align: right;">
-          ചോദ്യം ഇവിടെ കാണിക്കും...
+          Question text...
         </p>
 
-        <div class="grid grid-cols-1 gap-3 pt-3" id="optionsContainer">
-          <!-- Options dynamically rendered here -->
-        </div>
+        <div class="grid grid-cols-1 gap-3 pt-3" id="optionsContainer"></div>
 
         <button id="nextBtn" onclick="nextQuestion()"
           class="hidden w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">
@@ -101,7 +97,6 @@
         <p class="text-slate-500">Real-time rankings based on practice scores</p>
       </div>
 
-      <!-- Category Filter Tabs -->
       <div class="flex justify-center space-x-3">
         <button id="degTab" onclick="loadLeaderboard('degree_first_year')"
           class="px-5 py-2 rounded-xl font-bold bg-indigo-600 text-white transition">
@@ -113,7 +108,6 @@
         </button>
       </div>
 
-      <!-- Leaderboard Table -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
@@ -124,9 +118,7 @@
               <th class="p-4 text-right">Points</th>
             </tr>
           </thead>
-          <tbody id="leaderboardBody" class="divide-y divide-slate-100 text-sm">
-            <!-- Ranks dynamically added here -->
-          </tbody>
+          <tbody id="leaderboardBody" class="divide-y divide-slate-100 text-sm"></tbody>
         </table>
       </div>
     </section>
@@ -134,7 +126,6 @@
   </main>
 
   <script>
-    // Supabase Configuration
     const SUPABASE_URL = "https://nvrerueqxbiedwqdiikc.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_VG31jRVuAy9Pau8gU7nT9Q_yT5fOb4h";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -146,7 +137,6 @@
     let currentScore = 0;
     let isCurrentAnswered = false;
 
-    // View Switching
     function switchView(view) {
       document.getElementById('practiceSection').classList.add('hidden');
       document.getElementById('leaderboardSection').classList.add('hidden');
@@ -179,7 +169,6 @@
       document.getElementById('authAlert').classList.add('hidden');
     }
 
-    // Login and Registration Logic
     async function handleAuth(e) {
       e.preventDefault();
       const sId = document.getElementById('studentIdInput').value.trim();
@@ -189,7 +178,6 @@
       hideAlert();
 
       if (isRegisterMode) {
-        // 1. Verify eligibility (single() ന് പകരം array ആയി എടുക്കുന്നു)
         const { data: eligibleList, error: eligErr } = await client
           .from('eligible_students')
           .select('*')
@@ -207,7 +195,6 @@
           return;
         }
 
-        // 2. Sign up user
         const { data: authData, error: authErr } = await client.auth.signUp({
           email: fakeEmail,
           password: pwd
@@ -218,7 +205,6 @@
           return;
         }
 
-        // 3. Create Profile
         await client.from('profiles').insert([{
           id: authData.user.id,
           student_id: eligible.student_id,
@@ -232,10 +218,7 @@
         showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! ലോഗിൻ ചെയ്യാം.', false);
         toggleAuthMode();
 
-      }
-
       } else {
-        // Sign in
         const { data, error } = await client.auth.signInWithPassword({
           email: fakeEmail,
           password: pwd
@@ -333,7 +316,6 @@
         document.getElementById('currentScoreDisplay').innerText = currentScore;
       }
 
-      // Highlight options
       document.getElementById(`optBtn_${correctOpt}`).className = "w-full p-4 border border-green-600 bg-green-50 text-green-900 font-semibold rounded-xl flex items-center justify-between";
       if (!isCorrect) {
         document.getElementById(`optBtn_${selectedOpt}`).className = "w-full p-4 border border-red-600 bg-red-50 text-red-900 font-semibold rounded-xl flex items-center justify-between";
@@ -341,7 +323,6 @@
 
       document.getElementById('nextBtn').classList.remove('hidden');
 
-      // Record to Supabase
       await client.from('student_attempts').insert([{
         user_id: currentUserProfile.id,
         question_id: questionId,
