@@ -15,7 +15,7 @@
   <!-- Supabase JS Library CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
-  <!-- Google Fonts: Inter & Amiri -->
+  <!-- Google Fonts: Plus Jakarta Sans & Amiri -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -43,7 +43,6 @@
       
       <!-- LOGO AREA -->
       <div class="flex items-center gap-3">
-        <!-- ലോഗോ ഇമേജ്: GitHub-ൽ logo.png എന്ന പേരിൽ ഫയൽ ഉണ്ടെങ്കിൽ അത് കാണിക്കും, ഇല്ലെങ്കിൽ ഡിഫോൾട്ട് ഐക്കൺ വരും -->
         <img src="logo.png" alt="Logo" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135810.png';" class="w-9 h-9 object-contain rounded-lg bg-white/10 p-0.5" />
         <div>
           <h1 class="font-extrabold text-base md:text-lg tracking-tight text-white leading-tight">Skill Hunt</h1>
@@ -53,7 +52,7 @@
 
       <!-- Action Buttons & Navigation -->
       <div class="flex items-center gap-2">
-        <!-- APP INSTALL BUTTON (Visible only when installable) -->
+        <!-- APP INSTALL BUTTON -->
         <button id="installAppBtn" onclick="installAppPrompt()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl shadow-sm transition flex items-center gap-1.5 animate-bounce">
           <span>📲</span> <span>Install App</span>
         </button>
@@ -280,8 +279,8 @@
     const SUPABASE_ANON_KEY = "sb_publishable_VG31jRVuAy9Pau8gU7nT9Q_yT5fOb4h";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const QUESTION_TIME_LIMIT = 30;
-    const QUESTIONS_PER_PHASE = 10;
+    const QUESTION_TIME_LIMIT = 30; // 30 seconds per question
+    const QUESTIONS_PER_PHASE = 10; // 10 questions per Phase
 
     let isRegisterMode = false;
     let verifiedStudent = null;
@@ -299,7 +298,25 @@
     let timerInterval = null;
     let timeLeft = QUESTION_TIME_LIMIT;
 
-    // --- PWA / APP INSTALL LOGIC ---
+    // --- PERSISTENT LOGIN CHECK ON PAGE LOAD ---
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await client.auth.getSession();
+      if (session && session.user) {
+        initUserSession(session.user.id);
+      }
+    });
+
+    client.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        document.getElementById('authSection').classList.remove('hidden');
+        document.getElementById('practiceSection').classList.add('hidden');
+        document.getElementById('leaderboardSection').classList.add('hidden');
+        document.getElementById('navLinks').classList.add('hidden');
+        document.getElementById('navLinks').classList.remove('flex');
+      }
+    });
+
+    // --- PWA / APP INSTALL PROMPT ---
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -310,7 +327,7 @@
 
     async function installAppPrompt() {
       if (!deferredPrompt) {
-        alert("നിങ്ങളുടെ ബ്രൗസർ മെനുവിൽ (3 ഡോട്ട്സ്) നിന്ന് 'Add to Home screen' അല്ലെങ്കിൽ 'Install app' ക്ലിക്ക് ചെയ്തും ഇൻസ്റ്റാൾ ചെയ്യാം.");
+        alert("നിങ്ങളുടെ ബ്രൗസർ മെനുവിൽ നിന്ന് (3 ഡോട്ട്സ്) 'Add to Home screen' അല്ലെങ്കിൽ 'Install app' നൽകി ഇൻസ്റ്റാൾ ചെയ്യാം.");
         return;
       }
       deferredPrompt.prompt();
@@ -514,6 +531,7 @@
 
       allCategoryQuestions = questions || [];
 
+      // വിദ്യാർത്ഥിയുടെ കാറ്റഗറിയിലുള്ള യഥാർത്ഥ വിഷയങ്ങൾ മാത്രം ഓട്ടോമാറ്റിക്കായി ചേർക്കുന്നു
       const deptFilter = document.getElementById('deptFilter');
       deptFilter.innerHTML = '<option value="ALL">All Subjects</option>';
       
@@ -777,6 +795,7 @@
 
     async function logout() {
       await client.auth.signOut();
+      localStorage.clear();
       window.location.reload();
     }
   </script>
