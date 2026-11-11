@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skill Hunt Scholarship Exam</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS Library CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans antialiased">
+
+  <!-- Header -->
+  <header class="bg-indigo-900 text-white p-4 shadow-md sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto flex justify-between items-center px-2">
+      <h1 class="font-bold text-lg md:text-xl tracking-tight">🎓 Skill Hunt Exam</h1>
+      <div id="navLinks" class="space-x-4 text-sm font-medium hidden">
+        <button onclick="switchView('practice')" class="hover:text-indigo-200">Practice</button>
+        <button onclick="switchView('leaderboard')" class="hover:text-indigo-200">Leaderboard</button>
+        <button onclick="logout()" class="text-red-300 hover:text-red-100">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-4 mt-6">
+
+    <!-- 1. AUTH SECTION (LOGIN / REGISTER) -->
+    <section id="authSection" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-md border border-slate-200">
+      <h2 id="authTitle" class="text-2xl font-bold text-center text-slate-800 mb-6">Student Login</h2>
+      
+      <div id="authAlert" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
+
+      <form id="authForm" onsubmit="handleAuth(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1">Student ID / Roll No</label>
+          <input type="text" id="studentIdInput" required placeholder="Enter your ID"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1">Password</label>
+          <input type="password" id="passwordInput" required placeholder="Enter password"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+
+        <button type="submit" id="authSubmitBtn"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition">
+          Login
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-sm text-slate-600">
+        <span id="toggleText">New student?</span>
+        <button onclick="toggleAuthMode()" id="toggleBtn" class="text-indigo-600 font-bold underline ml-1">
+          Register now
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. PRACTICE SECTION -->
+    <section id="practiceSection" class="hidden max-w-2xl mx-auto space-y-6">
+      <!-- Profile Card -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+        <div>
+          <h2 id="studentNameDisplay" class="text-xl font-bold text-slate-800">Student Name</h2>
+          <p id="studentInfoDisplay" class="text-sm text-slate-500">College • Category</p>
+        </div>
+        <div class="text-right">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Current Score</span>
+          <p id="currentScoreDisplay" class="text-3xl font-extrabold text-indigo-600">0</p>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div id="questionContainer" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
+        <div class="flex justify-between text-sm font-semibold text-slate-400">
+          <span id="qCountDisplay">Question 1</span>
+          <span id="qDeptBadge" class="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full"></span>
+        </div>
+
+        <p id="questionText" class="text-xl font-semibold text-slate-900 leading-relaxed" style="direction: rtl; text-align: right;">
+          ചോദ്യം ഇവിടെ കാണിക്കും...
+        </p>
+
+        <div class="grid grid-cols-1 gap-3 pt-3" id="optionsContainer">
+          <!-- Options dynamically rendered here -->
+        </div>
+
+        <button id="nextBtn" onclick="nextQuestion()"
+          class="hidden w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">
+          Next Question ➔
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. LEADERBOARD SECTION -->
+    <section id="leaderboardSection" class="hidden max-w-3xl mx-auto space-y-6">
+      <div class="text-center space-y-2">
+        <h2 class="text-3xl font-extrabold text-slate-900">🏆 Leaderboard</h2>
+        <p class="text-slate-500">Real-time rankings based on practice scores</p>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="flex justify-center space-x-3">
+        <button id="degTab" onclick="loadLeaderboard('degree_first_year')"
+          class="px-5 py-2 rounded-xl font-bold bg-indigo-600 text-white transition">
+          Degree 1st Year
+        </button>
+        <button id="pgTab" onclick="loadLeaderboard('pg_first_year')"
+          class="px-5 py-2 rounded-xl font-bold bg-white border text-slate-600 hover:bg-slate-50 transition">
+          PG 1st Year
+        </button>
+      </div>
+
+      <!-- Leaderboard Table -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-100 text-slate-600 text-xs font-semibold uppercase tracking-wider">
+              <th class="p-4 text-center">Rank</th>
+              <th class="p-4">Student</th>
+              <th class="p-4">College</th>
+              <th class="p-4 text-right">Points</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody" class="divide-y divide-slate-100 text-sm">
+            <!-- Ranks dynamically added here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Supabase Configuration
+    const SUPABASE_URL = "https://nvrerueqxbiedwqdiikc.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_VG31jRVuAy9Pau8gU7nT9Q_yT5fOb4h";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let isRegisterMode = false;
+    let currentUserProfile = null;
+    let practiceQuestions = [];
+    let currentQIndex = 0;
+    let currentScore = 0;
+    let isCurrentAnswered = false;
+
+    // View Switching
+    function switchView(view) {
+      document.getElementById('practiceSection').classList.add('hidden');
+      document.getElementById('leaderboardSection').classList.add('hidden');
+
+      if (view === 'practice') {
+        document.getElementById('practiceSection').classList.remove('hidden');
+      } else if (view === 'leaderboard') {
+        document.getElementById('leaderboardSection').classList.remove('hidden');
+        loadLeaderboard('degree_first_year');
+      }
+    }
+
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById('authTitle').innerText = isRegisterMode ? 'Student Registration' : 'Student Login';
+      document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'Register' : 'Login';
+      document.getElementById('toggleText').innerText = isRegisterMode ? 'Already registered?' : 'New student?';
+      document.getElementById('toggleBtn').innerText = isRegisterMode ? 'Login here' : 'Register now';
+      hideAlert();
+    }
+
+    function showAlert(msg, isError = true) {
+      const alertBox = document.getElementById('authAlert');
+      alertBox.className = `p-3 mb-4 text-sm rounded-lg ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+      alertBox.innerText = msg;
+      alertBox.classList.remove('hidden');
+    }
+
+    function hideAlert() {
+      document.getElementById('authAlert').classList.add('hidden');
+    }
+
+    // Login and Registration Logic
+    async function handleAuth(e) {
+      e.preventDefault();
+      const sId = document.getElementById('studentIdInput').value.trim();
+      const pwd = document.getElementById('passwordInput').value;
+      const fakeEmail = `${sId.toLowerCase()}@skillhunt.internal`;
+
+      hideAlert();
+
+      if (isRegisterMode) {
+        // 1. Verify eligibility
+        const { data: eligible, error: eligErr } = await client
+          .from('eligible_students')
+          .select('*')
+          .eq('student_id', sId)
+          .single();
+
+        if (eligErr || !eligible) {
+          showAlert('ഈ സ്റ്റുഡന്റ് ഐഡി രജിസ്ട്രേഷൻ ലിസ്റ്റിൽ കണ്ടെത്താനായില്ല.');
+          return;
+        }
+
+        if (eligible.is_registered) {
+          showAlert('ഈ ഐഡി ഉപയോഗിച്ച് ഇതിനകം രജിസ്റ്റർ ചെയ്തിട്ടുണ്ട്. ലോഗിൻ ചെയ്യുക.');
+          return;
+        }
+
+        // 2. Sign up user
+        const { data: authData, error: authErr } = await client.auth.signUp({
+          email: fakeEmail,
+          password: pwd
+        });
+
+        if (authErr) {
+          showAlert(authErr.message);
+          return;
+        }
+
+        // 3. Create Profile
+        await client.from('profiles').insert([{
+          id: authData.user.id,
+          student_id: eligible.student_id,
+          name: eligible.student_name,
+          college_name: eligible.college_name,
+          category: eligible.category
+        }]);
+
+        await client.from('eligible_students').update({ is_registered: true }).eq('student_id', eligible.student_id);
+
+        showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! ലോഗിൻ ചെയ്യാം.', false);
+        toggleAuthMode();
+
+      } else {
+        // Sign in
+        const { data, error } = await client.auth.signInWithPassword({
+          email: fakeEmail,
+          password: pwd
+        });
+
+        if (error) {
+          showAlert('സ്റ്റുഡന്റ് ഐഡിയോ പാസ്‌വേഡോ തെറ്റാണ്.');
+          return;
+        }
+
+        initUserSession(data.user.id);
+      }
+    }
+
+    async function initUserSession(userId) {
+      const { data: profile } = await client
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (!profile) return;
+
+      currentUserProfile = profile;
+      document.getElementById('authSection').classList.add('hidden');
+      document.getElementById('navLinks').classList.remove('hidden');
+
+      document.getElementById('studentNameDisplay').innerText = profile.name;
+      document.getElementById('studentInfoDisplay').innerText = `${profile.college_name} • ${profile.category.replace('_', ' ').toUpperCase()}`;
+
+      switchView('practice');
+      loadPracticeQuestions();
+    }
+
+    async function loadPracticeQuestions() {
+      const { data: questions } = await client
+        .from('questions')
+        .select('*')
+        .eq('category', currentUserProfile.category)
+        .limit(200);
+
+      practiceQuestions = questions || [];
+      currentQIndex = 0;
+      currentScore = 0;
+      document.getElementById('currentScoreDisplay').innerText = currentScore;
+      renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+      if (practiceQuestions.length === 0) {
+        document.getElementById('questionContainer').innerHTML = "<p class='text-center text-slate-500 py-6'>നിലവിൽ ചോദ്യങ്ങൾ ലഭ്യമല്ല.</p>";
+        return;
+      }
+
+      const q = practiceQuestions[currentQIndex];
+      isCurrentAnswered = false;
+      document.getElementById('nextBtn').classList.add('hidden');
+
+      document.getElementById('qCountDisplay').innerText = `Question ${currentQIndex + 1} of ${practiceQuestions.length}`;
+      document.getElementById('qDeptBadge').innerText = q.department || 'General';
+      document.getElementById('questionText').innerText = q.question_text;
+
+      const opts = [
+        { key: 'A', text: q.option_a },
+        { key: 'B', text: q.option_b },
+        { key: 'C', text: q.option_c },
+        { key: 'D', text: q.option_d }
+      ];
+
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.id = `optBtn_${opt.key}`;
+        btn.className = "w-full p-4 border border-slate-200 rounded-xl flex items-center justify-between text-left hover:bg-slate-50 transition";
+        btn.onclick = () => selectOption(opt.key, q.correct_option, q.id);
+        btn.innerHTML = `
+          <span class="font-bold mr-3 text-slate-500">${opt.key}.</span>
+          <span class="flex-1 text-right" style="direction: rtl;">${opt.text}</span>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    async function selectOption(selectedOpt, correctOpt, questionId) {
+      if (isCurrentAnswered) return;
+      isCurrentAnswered = true;
+
+      const isCorrect = selectedOpt === correctOpt;
+      const points = isCorrect ? 1 : 0;
+
+      if (isCorrect) {
+        currentScore += 1;
+        document.getElementById('currentScoreDisplay').innerText = currentScore;
+      }
+
+      // Highlight options
+      document.getElementById(`optBtn_${correctOpt}`).className = "w-full p-4 border border-green-600 bg-green-50 text-green-900 font-semibold rounded-xl flex items-center justify-between";
+      if (!isCorrect) {
+        document.getElementById(`optBtn_${selectedOpt}`).className = "w-full p-4 border border-red-600 bg-red-50 text-red-900 font-semibold rounded-xl flex items-center justify-between";
+      }
+
+      document.getElementById('nextBtn').classList.remove('hidden');
+
+      // Record to Supabase
+      await client.from('student_attempts').insert([{
+        user_id: currentUserProfile.id,
+        question_id: questionId,
+        selected_option: selectedOpt,
+        is_correct: isCorrect,
+        points_earned: points
+      }]);
+    }
+
+    function nextQuestion() {
+      if (currentQIndex + 1 < practiceQuestions.length) {
+        currentQIndex++;
+        renderCurrentQuestion();
+      } else {
+        alert("നിങ്ങൾ ഈ സെഷനിലെ എല്ലാ ചോദ്യങ്ങളും പൂർത്തിയാക്കി!");
+      }
+    }
+
+    async function loadLeaderboard(cat) {
+      const degTab = document.getElementById('degTab');
+      const pgTab = document.getElementById('pgTab');
+
+      if (cat === 'degree_first_year') {
+        degTab.className = "px-5 py-2 rounded-xl font-bold bg-indigo-600 text-white transition";
+        pgTab.className = "px-5 py-2 rounded-xl font-bold bg-white border text-slate-600 hover:bg-slate-50 transition";
+      } else {
+        pgTab.className = "px-5 py-2 rounded-xl font-bold bg-indigo-600 text-white transition";
+        degTab.className = "px-5 py-2 rounded-xl font-bold bg-white border text-slate-600 hover:bg-slate-50 transition";
+      }
+
+      const body = document.getElementById('leaderboardBody');
+      body.innerHTML = "<tr><td colspan='4' class='text-center p-6 text-slate-400'>Loading rankings...</td></tr>";
+
+      const { data: ranks } = await client
+        .from('leaderboard')
+        .select('*')
+        .eq('category', cat)
+        .order('rank', { ascending: true })
+        .limit(50);
+
+      body.innerHTML = '';
+      if (!ranks || ranks.length === 0) {
+        body.innerHTML = "<tr><td colspan='4' class='text-center p-6 text-slate-400'>No attempts recorded yet.</td></tr>";
+        return;
+      }
+
+      ranks.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50";
+        tr.innerHTML = `
+          <td class="p-4 font-extrabold text-center text-slate-700">#${r.rank}</td>
+          <td class="p-4 font-bold text-slate-900">${r.name}</td>
+          <td class="p-4 text-slate-500">${r.college_name}</td>
+          <td class="p-4 text-right font-black text-indigo-600">${r.total_points}</td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    async function logout() {
+      await client.auth.signOut();
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>
