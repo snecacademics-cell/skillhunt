@@ -31,25 +31,73 @@
       
       <div id="authAlert" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
 
-      <form id="authForm" onsubmit="handleAuth(event)" class="space-y-4">
+      <!-- LOGIN FORM -->
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
           <label class="block text-sm font-semibold mb-1">Student ID / Roll No</label>
-          <input type="text" id="studentIdInput" required placeholder="Enter your ID"
+          <input type="text" id="loginStudentId" required placeholder="Enter your ID"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
 
         <div>
           <label class="block text-sm font-semibold mb-1">Password</label>
-          <input type="password" id="passwordInput" required placeholder="Enter password"
+          <input type="password" id="loginPassword" required placeholder="Enter password"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
 
-        <button type="submit" id="authSubmitBtn"
+        <button type="submit" id="loginBtn"
           class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition">
           Login
         </button>
       </form>
 
+      <!-- REGISTRATION FORM (STEP-BY-STEP VERIFICATION) -->
+      <div id="registerContainer" class="hidden space-y-4">
+        <!-- Step 1: ID Search -->
+        <div id="verifyStep">
+          <label class="block text-sm font-semibold mb-1">Enter Student ID / Roll No</label>
+          <div class="flex gap-2">
+            <input type="text" id="regStudentId" placeholder="e.g. 520211"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <button type="button" onclick="verifyStudentId()" id="verifyBtn"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition">
+              Verify
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Student Details Card & Confirmation -->
+        <div id="studentDetailsCard" class="hidden bg-indigo-50 p-4 rounded-xl border border-indigo-100 space-y-2 text-sm">
+          <p class="font-bold text-indigo-950 text-base border-b border-indigo-200 pb-1">വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ</p>
+          <div class="grid grid-cols-3 gap-1">
+            <span class="text-slate-500">Name:</span>
+            <span id="detName" class="font-bold text-slate-800 col-span-2"></span>
+          </div>
+          <div class="grid grid-cols-3 gap-1">
+            <span class="text-slate-500">College:</span>
+            <span id="detCollege" class="font-semibold text-slate-800 col-span-2"></span>
+          </div>
+          <div class="grid grid-cols-3 gap-1">
+            <span class="text-slate-500">Category:</span>
+            <span id="detCategory" class="font-semibold text-slate-800 col-span-2 uppercase"></span>
+          </div>
+
+          <!-- Password Setup -->
+          <div class="pt-3 border-t border-indigo-200 space-y-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Set Your Password</label>
+              <input type="password" id="regPassword" placeholder="Minimum 6 characters"
+                class="w-full px-3 py-2 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" />
+            </div>
+            <button type="button" onclick="confirmAndRegister()" id="confirmRegBtn"
+              class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg shadow-sm transition">
+              Confirm & Register
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode Toggle -->
       <div class="mt-6 text-center text-sm text-slate-600">
         <span id="toggleText">New student?</span>
         <button type="button" onclick="toggleAuthMode()" id="toggleBtn" class="text-indigo-600 font-bold underline ml-1">
@@ -131,6 +179,7 @@
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let isRegisterMode = false;
+    let verifiedStudent = null;
     let currentUserProfile = null;
     let practiceQuestions = [];
     let currentQIndex = 0;
@@ -151,11 +200,24 @@
 
     function toggleAuthMode() {
       isRegisterMode = !isRegisterMode;
-      document.getElementById('authTitle').innerText = isRegisterMode ? 'Student Registration' : 'Student Login';
-      document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'Register' : 'Login';
-      document.getElementById('toggleText').innerText = isRegisterMode ? 'Already registered?' : 'New student?';
-      document.getElementById('toggleBtn').innerText = isRegisterMode ? 'Login here' : 'Register now';
       hideAlert();
+      verifiedStudent = null;
+      document.getElementById('studentDetailsCard').classList.add('hidden');
+      document.getElementById('regStudentId').value = '';
+
+      if (isRegisterMode) {
+        document.getElementById('authTitle').innerText = 'Student Registration';
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerContainer').classList.remove('hidden');
+        document.getElementById('toggleText').innerText = 'Already registered?';
+        document.getElementById('toggleBtn').innerText = 'Login here';
+      } else {
+        document.getElementById('authTitle').innerText = 'Student Login';
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('registerContainer').classList.add('hidden');
+        document.getElementById('toggleText').innerText = 'New student?';
+        document.getElementById('toggleBtn').innerText = 'Register now';
+      }
     }
 
     function showAlert(msg, isError = true) {
@@ -169,68 +231,125 @@
       document.getElementById('authAlert').classList.add('hidden');
     }
 
-    async function handleAuth(e) {
+    // STEP 1: VERIFY STUDENT ID & SHOW DETAILS
+    async function verifyStudentId() {
+      const sId = document.getElementById('regStudentId').value.trim();
+      hideAlert();
+      document.getElementById('studentDetailsCard').classList.add('hidden');
+
+      if (!sId) {
+        showAlert('ദയവായി ഐഡി നമ്പർ നൽകുക.');
+        return;
+      }
+
+      const verifyBtn = document.getElementById('verifyBtn');
+      verifyBtn.innerText = 'Checking...';
+      verifyBtn.disabled = true;
+
+      const { data: eligibleList, error } = await client
+        .from('eligible_students')
+        .select('*')
+        .eq('student_id', sId);
+
+      verifyBtn.innerText = 'Verify';
+      verifyBtn.disabled = false;
+
+      if (error || !eligibleList || eligibleList.length === 0) {
+        showAlert('ഈ സ്റ്റുഡന്റ് ഐഡി രജിസ്ട്രേഷൻ ലിസ്റ്റിൽ കണ്ടെത്താനായില്ല. ദയവായി പരിശോധിക്കുക.');
+        return;
+      }
+
+      const st = eligibleList[0];
+
+      if (st.is_registered) {
+        showAlert('ഈ ഐഡി ഉപയോഗിച്ച് ഇതിനകം രജിസ്റ്റർ ചെയ്തിട്ടുണ്ട്. ലോഗിൻ ചെയ്യുക.');
+        return;
+      }
+
+      // Populate details card
+      verifiedStudent = st;
+      document.getElementById('detName').innerText = st.student_name;
+      document.getElementById('detCollege').innerText = st.college_name;
+      document.getElementById('detCategory').innerText = st.category.replace('_', ' ');
+      document.getElementById('studentDetailsCard').classList.remove('hidden');
+    }
+
+    // STEP 2: CONFIRM & COMPLETE REGISTRATION
+    async function confirmAndRegister() {
+      if (!verifiedStudent) return;
+      const pwd = document.getElementById('regPassword').value;
+
+      if (!pwd || pwd.length < 6) {
+        showAlert('പാസ്‌വേഡിൽ കുറഞ്ഞത് 6 അക്ഷരങ്ങൾ വേണം.');
+        return;
+      }
+
+      const confirmBtn = document.getElementById('confirmRegBtn');
+      confirmBtn.innerText = 'Registering...';
+      confirmBtn.disabled = true;
+
+      const fakeEmail = `student_${verifiedStudent.student_id.toLowerCase()}@skillhunt.com`;
+
+      const { data: authData, error: authErr } = await client.auth.signUp({
+        email: fakeEmail,
+        password: pwd
+      });
+
+      if (authErr) {
+        showAlert(authErr.message);
+        confirmBtn.innerText = 'Confirm & Register';
+        confirmBtn.disabled = false;
+        return;
+      }
+
+      // Add to Profiles
+      await client.from('profiles').insert([{
+        id: authData.user.id,
+        student_id: verifiedStudent.student_id,
+        name: verifiedStudent.student_name,
+        college_name: verifiedStudent.college_name,
+        category: verifiedStudent.category
+      }]);
+
+      // Mark registered
+      await client
+        .from('eligible_students')
+        .update({ is_registered: true })
+        .eq('student_id', verifiedStudent.student_id);
+
+      showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! നിങ്ങൾക്ക് ലോഗിൻ ചെയ്യാം.', false);
+      confirmBtn.innerText = 'Confirm & Register';
+      confirmBtn.disabled = false;
+      toggleAuthMode();
+      document.getElementById('loginStudentId').value = verifiedStudent.student_id;
+    }
+
+    // LOGIN LOGIC
+    async function handleLogin(e) {
       e.preventDefault();
-      const sId = document.getElementById('studentIdInput').value.trim();
-      const pwd = document.getElementById('passwordInput').value;
+      const sId = document.getElementById('loginStudentId').value.trim();
+      const pwd = document.getElementById('loginPassword').value;
       const fakeEmail = `student_${sId.toLowerCase()}@skillhunt.com`;
 
       hideAlert();
+      const loginBtn = document.getElementById('loginBtn');
+      loginBtn.innerText = 'Logging in...';
+      loginBtn.disabled = true;
 
-      if (isRegisterMode) {
-        const { data: eligibleList, error: eligErr } = await client
-          .from('eligible_students')
-          .select('*')
-          .eq('student_id', sId);
+      const { data, error } = await client.auth.signInWithPassword({
+        email: fakeEmail,
+        password: pwd
+      });
 
-        if (eligErr || !eligibleList || eligibleList.length === 0) {
-          showAlert('ഈ സ്റ്റുഡന്റ് ഐഡി രജിസ്ട്രേഷൻ ലിസ്റ്റിൽ കണ്ടെത്താനായില്ല.');
-          return;
-        }
+      loginBtn.innerText = 'Login';
+      loginBtn.disabled = false;
 
-        const eligible = eligibleList[0];
-
-        if (eligible.is_registered) {
-          showAlert('ഈ ഐഡി ഉപയോഗിച്ച് ഇതിനകം രജിസ്റ്റർ ചെയ്തിട്ടുണ്ട്. ലോഗിൻ ചെയ്യുക.');
-          return;
-        }
-
-        const { data: authData, error: authErr } = await client.auth.signUp({
-          email: fakeEmail,
-          password: pwd
-        });
-
-        if (authErr) {
-          showAlert(authErr.message);
-          return;
-        }
-
-        await client.from('profiles').insert([{
-          id: authData.user.id,
-          student_id: eligible.student_id,
-          name: eligible.student_name,
-          college_name: eligible.college_name,
-          category: eligible.category
-        }]);
-
-        await client.from('eligible_students').update({ is_registered: true }).eq('student_id', eligible.student_id);
-
-        showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! ലോഗിൻ ചെയ്യാം.', false);
-        toggleAuthMode();
-
-      } else {
-        const { data, error } = await client.auth.signInWithPassword({
-          email: fakeEmail,
-          password: pwd
-        });
-
-        if (error) {
-          showAlert('സ്റ്റുഡന്റ് ഐഡിയോ പാസ്‌വേഡോ തെറ്റാണ്.');
-          return;
-        }
-
-        initUserSession(data.user.id);
+      if (error) {
+        showAlert('സ്റ്റുഡന്റ് ഐഡിയോ പാസ്‌വേഡോ തെറ്റാണ്.');
+        return;
       }
+
+      initUserSession(data.user.id);
     }
 
     async function initUserSession(userId) {
