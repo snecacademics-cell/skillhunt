@@ -604,10 +604,13 @@
     }
 
     // Explicit Start Action
-    function launchQuizSession() {
+   function launchQuizSession() {
+      // 1. ആദ്യം സ്ക്രീൻ മാറ്റുന്നു
+      switchView('quiz');
+      
+      // 2. അതിനുശേഷം മാത്രം ഫേസ് ചോദ്യങ്ങളും ടൈമറും സ്റ്റാർട്ട് ചെയ്യുന്നു
       currentPhase = parseInt(document.getElementById('phaseSelect').value, 10) || 1;
       startPhase(currentPhase);
-      switchView('quiz');
     }
 
     function startPhase(phaseNum) {
@@ -644,20 +647,22 @@
     function updateTimerUI() {
       const timerText = document.getElementById('timerText');
       const timeProgressBar = document.getElementById('timeProgressBar');
+      if (!timerText || !timeProgressBar) return;
+
       timerText.innerText = `${timeLeft}s`;
 
+      // ശതമാനം കണക്കാക്കി വീതി കൃത്യമായി കുറയ്ക്കുന്നു
       const pct = (timeLeft / QUESTION_TIME_LIMIT) * 100;
       timeProgressBar.style.width = `${pct}%`;
 
       if (timeLeft <= 7) {
-        timeProgressBar.style.backgroundColor = '#e11d48';
+        timeProgressBar.style.backgroundColor = '#e11d48'; // Red warning
         timerText.className = 'text-sm font-black text-rose-600 font-mono animate-pulse';
       } else {
-        timeProgressBar.style.backgroundColor = '#4f46e5';
+        timeProgressBar.style.backgroundColor = '#4f46e5'; // Indigo
         timerText.className = 'text-sm font-black text-indigo-600 font-mono';
       }
     }
-
     function handleTimeOut() {
       if (isCurrentAnswered) return;
       isCurrentAnswered = true;
