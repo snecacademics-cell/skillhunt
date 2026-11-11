@@ -8,24 +8,26 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Supabase JS Library CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    .circular-chart {
-      display: block;
-      margin: 0 auto;
-      max-width: 60px;
-      max-height: 60px;
-    }
-    .circle-bg {
-      fill: none;
-      stroke: #e2e8f0;
-      stroke-width: 3.8;
-    }
-    .circle {
-      fill: none;
-      stroke-width: 3.8;
-      stroke-linecap: round;
-      transition: stroke-dasharray 1s linear, stroke 0.3s;
-    }
+
+<!-- Google Fonts: Amiri -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  .arabic-text {
+    font-family: 'Amiri', serif;
+    direction: rtl;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  .circular-chart {
+    display: block;
+    margin: 0 auto;
+    max-width: 60px;
+    max-height: 60px;
+  }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 font-sans antialiased">
@@ -176,8 +178,8 @@
           </div>
         </div>
 
-        <p id="questionText" class="text-xl font-semibold text-slate-900 leading-relaxed" style="direction: rtl; text-align: right;">
-          Question text...
+        <p id="questionText" class="text-2xl font-bold text-slate-900 leading-relaxed arabic-text">
+  Question text...
         </p>
 
         <div class="grid grid-cols-1 gap-3 pt-2" id="optionsContainer"></div>
@@ -581,8 +583,8 @@
         btn.className = "w-full p-4 border border-slate-200 rounded-xl flex items-center justify-between text-left hover:bg-slate-50 transition";
         btn.onclick = () => selectOption(opt.key, q.correct_option, q.id);
         btn.innerHTML = `
-          <span class="font-bold mr-3 text-slate-500">${opt.key}.</span>
-          <span class="flex-1 text-right" style="direction: rtl;">${opt.text}</span>
+          <span class="font-bold mr-3 text-slate-500 font-sans">${opt.key}.</span>
+          <span class="flex-1 arabic-text text-xl">${opt.text}</span>
         `;
         container.appendChild(btn);
       });
