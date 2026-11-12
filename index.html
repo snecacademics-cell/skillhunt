@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Skill Hunt Scholarship Exam</title>
+  <title>Skill Hunt Scholarship Exam Practice</title>
   
   <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -36,7 +36,7 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 antialiased flex flex-col justify-between">
 
-  <!-- Clean Mobile Header (No text overlaps) -->
+  <!-- Header -->
   <header class="bg-indigo-950 text-white shadow-md sticky top-0 z-50 border-b border-indigo-900/60">
     <div class="max-w-3xl mx-auto px-4 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
       
@@ -46,12 +46,12 @@
           <img src="logo.png" alt="Logo" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135810.png';" class="w-8 h-8 object-contain rounded-lg bg-white/10 p-0.5 shrink-0" />
           <div>
             <h1 class="font-extrabold text-base tracking-tight text-white leading-none">Skill Hunt</h1>
-            <p class="text-indigo-300 font-semibold text-[10px] mt-0.5">Scholarship Portal</p>
+            <p class="text-indigo-300 font-semibold text-[10px] mt-0.5">Scholarship Exam Practice</p>
           </div>
         </div>
 
         <button id="installAppBtn" onclick="installAppPrompt()" class="hidden sm:hidden bg-emerald-600 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg">
-          📲 Install
+          📲 Install App
         </button>
       </div>
 
@@ -71,7 +71,7 @@
     <section id="authSection" class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100">
       <div class="text-center mb-6">
         <h2 id="authTitle" class="text-2xl font-black text-slate-900 tracking-tight">Student Login</h2>
-        <p class="text-xs text-slate-500 mt-1">Skill Hunt Scholarship Examination</p>
+        <p class="text-xs text-slate-500 mt-1">Skill Hunt Scholarship Exam Practice</p>
       </div>
       
       <div id="authAlert" class="hidden p-3 mb-4 text-xs font-semibold rounded-xl leading-relaxed"></div>
@@ -80,17 +80,17 @@
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Student ID / Roll No</label>
-          <input type="text" id="loginStudentId" required placeholder="Enter ID number"
+          <input type="text" id="loginStudentId" required placeholder="Enter your Student ID"
             class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Password</label>
-          <input type="password" id="loginPassword" required placeholder="Enter password"
+          <input type="password" id="loginPassword" required placeholder="Enter your password"
             class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
         </div>
         <button type="submit" id="loginBtn"
           class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md shadow-indigo-600/30 transition text-sm">
-          Login to Dashboard
+          Login to Practice Portal
         </button>
       </form>
 
@@ -103,13 +103,13 @@
               class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-sm transition" />
             <button type="button" onclick="verifyStudentId()" id="verifyBtn"
               class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-xs shadow transition shrink-0">
-              Verify
+              Verify ID
             </button>
           </div>
         </div>
 
         <div id="studentDetailsCard" class="hidden bg-indigo-50/70 p-4 rounded-2xl border border-indigo-100 space-y-2 text-xs">
-          <p class="font-extrabold text-indigo-950 text-xs border-b border-indigo-200/80 pb-1">വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ</p>
+          <p class="font-extrabold text-indigo-950 text-xs border-b border-indigo-200/80 pb-1 uppercase tracking-wider">Student Verification Details</p>
           <div class="grid grid-cols-3 gap-1 pt-1">
             <span class="text-slate-500 font-medium">Name:</span>
             <span id="detName" class="font-bold text-slate-900 col-span-2"></span>
@@ -125,7 +125,7 @@
 
           <div class="pt-3 border-t border-indigo-200/80 space-y-2">
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Set Password</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Create Password</label>
               <input type="password" id="regPassword" placeholder="Minimum 6 characters"
                 class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-xs" />
             </div>
@@ -145,18 +145,18 @@
       </div>
     </section>
 
-    <!-- 2. STUDENT HOME / SELECTION DASHBOARD (Shown immediately after login) -->
+    <!-- 2. STUDENT HOME / SELECTION DASHBOARD -->
     <section id="dashboardSection" class="hidden space-y-4">
       
       <!-- Student Profile Card -->
       <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 flex justify-between items-center">
         <div class="min-w-0 pr-2">
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">Logged In</span>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">Active Student</span>
           <h2 id="studentNameDisplay" class="text-lg font-extrabold text-slate-900 tracking-tight truncate mt-1">Student Name</h2>
           <p id="studentInfoDisplay" class="text-xs text-slate-500 font-medium truncate mt-0.5">College • Category</p>
         </div>
         <div class="text-right bg-indigo-50/80 px-4 py-2.5 rounded-2xl border border-indigo-100 shrink-0">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Total Score</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Total Points</span>
           <p id="currentScoreDisplay" class="text-2xl font-black text-indigo-700 leading-none mt-0.5">0</p>
         </div>
       </div>
@@ -164,42 +164,51 @@
       <!-- Practice Selection Card -->
       <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-5">
         <div>
-          <h3 class="text-base font-extrabold text-slate-900">Start Practice Session</h3>
-          <p class="text-xs text-slate-500 mt-0.5">വിഷയവും ഘട്ടവും തിരഞ്ഞെടുത്ത ശേഷം പരിശീലനം ആരംഭിക്കുക</p>
+          <h3 class="text-base font-extrabold text-slate-900">Practice Configuration</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Select your subject and unlocked phase. Score 10/10 to unlock the next phase.</p>
         </div>
 
         <div class="space-y-3.5">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Select Subject</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">1. Select Subject</label>
             <select id="deptFilter" onchange="onFilterChange()" 
               class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
             </select>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Select Phase (10 Questions)</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">2. Select Phase (Pool of 30 • 10 Shuffled Qs)</label>
             <select id="phaseSelect" onchange="onPhaseChange()" 
               class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-bold bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
             </select>
           </div>
         </div>
 
+        <!-- Daily Status Banner -->
+        <div id="dailyPhaseStatusBanner" class="p-3 rounded-xl text-xs font-semibold bg-slate-50 border border-slate-200 text-slate-600 flex items-center justify-between">
+          <span>Today's Points for this Phase:</span>
+          <span id="todayPhasePointsText" class="font-extrabold text-indigo-700">0 / 10 pts</span>
+        </div>
+
         <button onclick="launchQuizSession()" 
           class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-indigo-600/30 transition text-sm flex items-center justify-center gap-2">
-          <span>Start Practice</span> <span>🚀</span>
+          <span>Start Practice Session</span> <span>🚀</span>
         </button>
       </div>
 
     </section>
 
-    <!-- 3. QUIZ SCREEN (Only visible when user clicks 'Start Practice') -->
+    <!-- 3. QUIZ SCREEN -->
     <section id="quizScreenSection" class="hidden space-y-4">
       
       <div class="flex items-center justify-between px-1">
         <button onclick="switchView('dashboard')" class="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1">
           ← Back to Home
         </button>
-        <span id="quizPhaseIndicator" class="text-xs font-extrabold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full">Phase 1</span>
+        <div class="flex items-center gap-2">
+          <span id="quizSubjectIndicator" class="text-[11px] font-bold text-slate-500 uppercase">Subject</span>
+          <span id="quizPhaseIndicator" class="text-xs font-extrabold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full">Phase 1</span>
+        </div>
       </div>
 
       <div id="questionContainer" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
@@ -211,9 +220,9 @@
 
         <div class="p-5 sm:p-7 space-y-5">
           <div class="flex justify-between items-center text-xs font-bold">
-            <span id="qCountDisplay" class="text-slate-400">Question 1/10</span>
-            <div class="flex items-center gap-1 font-bold">
-              <span class="text-slate-400 text-[10px]">TIME:</span>
+            <span id="qCountDisplay" class="text-slate-400">Question 1 / 10</span>
+            <div class="flex items-center gap-1.5 font-bold">
+              <span class="text-slate-400 text-[10px]">TIME REMAINING:</span>
               <span id="timerText" class="text-sm font-black text-indigo-600 font-mono">30s</span>
             </div>
           </div>
@@ -237,20 +246,21 @@
 
       <!-- Phase Result Summary Card -->
       <div id="phaseResultCard" class="hidden bg-white p-7 rounded-3xl shadow-sm border border-slate-200 text-center space-y-4">
-        <div class="text-4xl">🎯</div>
+        <div id="resultEmoji" class="text-4xl">🎯</div>
         <div>
-          <h3 id="phaseResultTitle" class="text-xl font-black text-slate-900">Phase Complete!</h3>
-          <p id="phaseResultScore" class="text-xs sm:text-sm text-slate-600 mt-1 font-medium"></p>
+          <h3 id="phaseResultTitle" class="text-xl font-black text-slate-900">Session Complete</h3>
+          <p id="phaseResultScore" class="text-xs sm:text-sm text-slate-600 mt-1.5 font-medium"></p>
+          <p id="phaseResultSubtext" class="text-xs text-slate-500 mt-2 bg-slate-50 p-3 rounded-xl border border-slate-100"></p>
         </div>
-        <div class="flex justify-center gap-2 pt-2">
-          <button onclick="retryCurrentPhase()" class="px-4 py-2 border border-indigo-600 text-indigo-600 font-bold rounded-xl text-xs hover:bg-indigo-50 transition">
-            🔄 Retry
+        <div class="flex flex-wrap justify-center gap-2 pt-2">
+          <button onclick="retryCurrentPhase()" class="px-5 py-2.5 border border-indigo-600 text-indigo-600 font-bold rounded-xl text-xs hover:bg-indigo-50 transition">
+            🔄 Retry Shuffled Questions
           </button>
-          <button id="nextPhaseBtn" onclick="goToNextPhase()" class="px-5 py-2 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 shadow transition">
-            Next Phase ➔
+          <button id="nextPhaseBtn" onclick="goToNextPhase()" class="hidden px-5 py-2.5 bg-emerald-600 text-white font-bold rounded-xl text-xs hover:bg-emerald-700 shadow transition">
+            Start Next Phase ➔
           </button>
-          <button onclick="switchView('dashboard')" class="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs hover:bg-slate-200 transition">
-            Home
+          <button onclick="switchView('dashboard')" class="px-4 py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs hover:bg-slate-200 transition">
+            Back to Home
           </button>
         </div>
       </div>
@@ -260,8 +270,8 @@
     <!-- 4. LEADERBOARD SECTION -->
     <section id="leaderboardSection" class="hidden space-y-4">
       <div class="text-center space-y-0.5">
-        <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">🏆 Leaderboard</h2>
-        <p class="text-xs text-slate-500 font-medium">Rankings based on practice scores</p>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">🏆 Live Leaderboard</h2>
+        <p class="text-xs text-slate-500 font-medium">Rankings updated from daily practice scores</p>
       </div>
 
       <div class="flex justify-center gap-2">
@@ -292,7 +302,7 @@
   </main>
 
   <footer class="py-3 text-center text-slate-400 text-[10px]">
-    Skill Hunt Examination Platform • Academic Cell
+    Skill Hunt Scholarship Exam Practice • Academic Cell
   </footer>
 
   <script>
@@ -300,8 +310,11 @@
     const SUPABASE_ANON_KEY = "sb_publishable_VG31jRVuAy9Pau8gU7nT9Q_yT5fOb4h";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const QUESTION_TIME_LIMIT = 30;
-    const QUESTIONS_PER_PHASE = 10;
+    // CONFIGURATION CONSTANTS
+    const QUESTION_TIME_LIMIT = 30;   // 30 Seconds per question
+    const POOL_SIZE_PER_PHASE = 30;   // 30 Questions per Phase pool
+    const QUESTIONS_PER_SESSION = 10; // 10 Shuffled Questions drawn per attempt
+    const DAILY_MAX_POINTS_PER_PHASE = 10; // Max 10 points per phase per day
 
     let isRegisterMode = false;
     let verifiedStudent = null;
@@ -309,17 +322,19 @@
     
     let allCategoryQuestions = [];
     let filteredQuestions = [];
+    let userAttemptsHistory = []; // Stores past attempts to track unlocked phases & daily limits
+    
     let currentPhase = 1;
     let currentPhaseQuestions = [];
     let currentQIndex = 0;
-    let phaseScore = 0;
+    let sessionScore = 0;
     let totalScore = 0;
     let isCurrentAnswered = false;
 
     let timerInterval = null;
     let timeLeft = QUESTION_TIME_LIMIT;
 
-    // Check login state
+    // Persistent login check
     window.addEventListener('DOMContentLoaded', async () => {
       const { data: { session } } = await client.auth.getSession();
       if (session && session.user) {
@@ -339,6 +354,7 @@
       }
     });
 
+    // PWA Install Prompt
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -349,7 +365,7 @@
 
     async function installAppPrompt() {
       if (!deferredPrompt) {
-        alert("ബ്രൗസർ മെനുവിൽ നിന്ന് (3 ഡോട്ട്സ്) 'Add to Home screen' ക്ലിക്ക് ചെയ്തും ഇൻസ്റ്റാൾ ചെയ്യാം.");
+        alert("Open your browser menu (3 dots) and tap 'Add to Home screen' to install the app.");
         return;
       }
       deferredPrompt.prompt();
@@ -369,6 +385,7 @@
 
       if (view === 'dashboard') {
         document.getElementById('dashboardSection').classList.remove('hidden');
+        refreshUserAttemptsAndUI();
       } else if (view === 'quiz') {
         document.getElementById('quizScreenSection').classList.remove('hidden');
       } else if (view === 'leaderboard') {
@@ -401,7 +418,7 @@
 
     function showAlert(msg, isError = true) {
       const alertBox = document.getElementById('authAlert');
-      alertBox.className = `p-2.5 mb-3 text-xs font-semibold rounded-xl leading-relaxed ${isError ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`;
+      alertBox.className = `p-3 mb-3 text-xs font-semibold rounded-xl leading-relaxed ${isError ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`;
       alertBox.innerText = msg;
       alertBox.classList.remove('hidden');
     }
@@ -416,7 +433,7 @@
       document.getElementById('studentDetailsCard').classList.add('hidden');
 
       if (!sId) {
-        showAlert('ദയവായി ഐഡി നമ്പർ നൽകുക.');
+        showAlert('Please enter your Student ID.');
         return;
       }
 
@@ -429,17 +446,17 @@
         .select('*')
         .eq('student_id', sId);
 
-      verifyBtn.innerText = 'Verify';
+      verifyBtn.innerText = 'Verify ID';
       verifyBtn.disabled = false;
 
       if (error || !eligibleList || eligibleList.length === 0) {
-        showAlert('ഈ സ്റ്റുഡന്റ് ഐഡി രജിസ്ട്രേഷൻ ലിസ്റ്റിൽ കണ്ടെത്താനായില്ല.');
+        showAlert('Student ID not found in the eligible list. Please verify your ID.');
         return;
       }
 
       const st = eligibleList[0];
       if (st.is_registered) {
-        showAlert('ഈ ഐഡി ഉപയോഗിച്ച് ഇതിനകം രജിസ്റ്റർ ചെയ്തിട്ടുണ്ട്. ലോഗിൻ ചെയ്യുക.');
+        showAlert('This Student ID is already registered. Please login.');
         return;
       }
 
@@ -455,7 +472,7 @@
       const pwd = document.getElementById('regPassword').value;
 
       if (!pwd || pwd.length < 6) {
-        showAlert('പാസ്‌വേഡിൽ കുറഞ്ഞത് 6 അക്ഷരങ്ങൾ വേണം.');
+        showAlert('Password must be at least 6 characters long.');
         return;
       }
 
@@ -487,7 +504,7 @@
 
       await client.from('eligible_students').update({ is_registered: true }).eq('student_id', verifiedStudent.student_id);
 
-      showAlert('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! ലോഗിൻ ചെയ്യാം.', false);
+      showAlert('Registration successful! You can now log in.', false);
       confirmBtn.innerText = 'Confirm & Register';
       confirmBtn.disabled = false;
       toggleAuthMode();
@@ -510,11 +527,11 @@
         password: pwd
       });
 
-      loginBtn.innerText = 'Login to Dashboard';
+      loginBtn.innerText = 'Login to Practice Portal';
       loginBtn.disabled = false;
 
       if (error) {
-        showAlert('സ്റ്റുഡന്റ് ഐഡിയോ പാസ്‌വേഡോ തെറ്റാണ്.');
+        showAlert('Invalid Student ID or Password.');
         return;
       }
 
@@ -538,40 +555,77 @@
       document.getElementById('studentNameDisplay').innerText = profile.name;
       document.getElementById('studentInfoDisplay').innerText = `${profile.college_name} • ${profile.category.replace('_', ' ').toUpperCase()}`;
 
-      // Load total points
-      const { data: attempts } = await client
-        .from('student_attempts')
-        .select('points_earned')
-        .eq('user_id', profile.id);
-
-      totalScore = (attempts || []).reduce((acc, curr) => acc + (curr.points_earned || 0), 0);
-      document.getElementById('currentScoreDisplay').innerText = totalScore;
-
-      // Navigate to Home Dashboard (Not directly to quiz)
+      await loadAllQuestions();
       switchView('dashboard');
-      loadAllQuestions();
     }
 
     async function loadAllQuestions() {
       const { data: questions } = await client
         .from('questions')
         .select('*')
-        .eq('category', currentUserProfile.category);
+        .eq('category', currentUserProfile.category)
+        .order('id', { ascending: true });
 
       allCategoryQuestions = questions || [];
 
       const deptFilter = document.getElementById('deptFilter');
-      deptFilter.innerHTML = '<option value="ALL">All Subjects</option>';
+      deptFilter.innerHTML = '';
       
       const uniqueDepts = [...new Set(allCategoryQuestions.map(q => q.department).filter(Boolean))];
-      uniqueDepts.forEach(d => {
-        const opt = document.createElement('option');
-        opt.value = d;
-        opt.innerText = d.toUpperCase();
-        deptFilter.appendChild(opt);
-      });
+      if (uniqueDepts.length === 0) {
+        deptFilter.innerHTML = '<option value="ALL">All Subjects</option>';
+      } else {
+        uniqueDepts.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.innerText = d.toUpperCase();
+          deptFilter.appendChild(opt);
+        });
+      }
+    }
+
+    async function refreshUserAttemptsAndUI() {
+      const { data: attempts } = await client
+        .from('student_attempts')
+        .select('*')
+        .eq('user_id', currentUserProfile.id);
+
+      userAttemptsHistory = attempts || [];
+      totalScore = userAttemptsHistory.reduce((acc, curr) => acc + (curr.points_earned || 0), 0);
+      document.getElementById('currentScoreDisplay').innerText = totalScore;
 
       onFilterChange();
+    }
+
+    // Helper: Get highest unlocked phase for a subject
+    // Unlock rule: Must have scored 10 points in Phase N to unlock Phase N+1
+    function getMaxUnlockedPhase(subjectName) {
+      let maxUnlocked = 1;
+      for (let p = 1; p <= 20; p++) {
+        const phasePoints = userAttemptsHistory
+          .filter(a => (a.subject_name || '').toLowerCase() === subjectName.toLowerCase() && a.phase_number === p)
+          .reduce((sum, a) => sum + (a.points_earned || 0), 0);
+        
+        if (phasePoints >= 10) {
+          maxUnlocked = p + 1;
+        } else {
+          break;
+        }
+      }
+      return maxUnlocked;
+    }
+
+    // Helper: Get points earned TODAY for a specific subject & phase
+    function getTodayPointsForPhase(subjectName, phaseNum) {
+      const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      return userAttemptsHistory
+        .filter(a => {
+          const attemptDate = (a.attempted_at || a.created_at || '').split('T')[0];
+          return attemptDate === todayStr && 
+                 (a.subject_name || '').toLowerCase() === subjectName.toLowerCase() && 
+                 a.phase_number === phaseNum;
+        })
+        .reduce((sum, a) => sum + (a.points_earned || 0), 0);
     }
 
     function onFilterChange() {
@@ -584,32 +638,64 @@
         );
       }
 
-      const totalPhases = Math.max(1, Math.ceil(filteredQuestions.length / QUESTIONS_PER_PHASE));
+      // Pool of 30 questions per phase
+      const totalPhases = Math.max(1, Math.ceil(filteredQuestions.length / POOL_SIZE_PER_PHASE));
+      const maxUnlocked = getMaxUnlockedPhase(selectedDept);
+      
       const phaseSelect = document.getElementById('phaseSelect');
       phaseSelect.innerHTML = '';
 
       for (let p = 1; p <= totalPhases; p++) {
         const opt = document.createElement('option');
         opt.value = p;
-        opt.innerText = `Phase ${p} (${(p - 1) * QUESTIONS_PER_PHASE + 1}-${Math.min(p * QUESTIONS_PER_PHASE, filteredQuestions.length)})`;
+        const isLocked = p > maxUnlocked;
+        opt.disabled = isLocked;
+        opt.innerText = isLocked 
+          ? `🔒 Phase ${p} (Locked - Score 10/10 in Phase ${p - 1})` 
+          : `Phase ${p} (Pool: Q${(p - 1) * POOL_SIZE_PER_PHASE + 1}-${Math.min(p * POOL_SIZE_PER_PHASE, filteredQuestions.length)})`;
         phaseSelect.appendChild(opt);
       }
 
-      currentPhase = 1;
-      phaseSelect.value = 1;
+      // Default to highest unlocked phase
+      currentPhase = Math.min(maxUnlocked, totalPhases);
+      phaseSelect.value = currentPhase;
+      onPhaseChange();
     }
 
     function onPhaseChange() {
-      currentPhase = parseInt(document.getElementById('phaseSelect').value, 10);
+      currentPhase = parseInt(document.getElementById('phaseSelect').value, 10) || 1;
+      const selectedDept = document.getElementById('deptFilter').value;
+      const todayPts = getTodayPointsForPhase(selectedDept, currentPhase);
+
+      const banner = document.getElementById('dailyPhaseStatusBanner');
+      const ptsText = document.getElementById('todayPhasePointsText');
+      ptsText.innerText = `${todayPts} / ${DAILY_MAX_POINTS_PER_PHASE} pts`;
+
+      if (todayPts >= DAILY_MAX_POINTS_PER_PHASE) {
+        banner.className = "p-3 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-between";
+        ptsText.className = "font-extrabold text-amber-700";
+      } else {
+        banner.className = "p-3 rounded-xl text-xs font-semibold bg-indigo-50/60 border border-indigo-100 text-slate-700 flex items-center justify-between";
+        ptsText.className = "font-extrabold text-indigo-700";
+      }
     }
 
-    // Explicit Start Action
-   function launchQuizSession() {
-      // 1. ആദ്യം സ്ക്രീൻ മാറ്റുന്നു
-      switchView('quiz');
-      
-      // 2. അതിനുശേഷം മാത്രം ഫേസ് ചോദ്യങ്ങളും ടൈമറും സ്റ്റാർട്ട് ചെയ്യുന്നു
+    // Fisher-Yates Shuffle Function
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function launchQuizSession() {
+      const selectedDept = document.getElementById('deptFilter').value;
       currentPhase = parseInt(document.getElementById('phaseSelect').value, 10) || 1;
+
+      document.getElementById('quizSubjectIndicator').innerText = selectedDept.toUpperCase();
+      switchView('quiz');
       startPhase(currentPhase);
     }
 
@@ -617,11 +703,16 @@
       currentPhase = phaseNum;
       document.getElementById('quizPhaseIndicator').innerText = `Phase ${phaseNum}`;
 
-      const startIdx = (phaseNum - 1) * QUESTIONS_PER_PHASE;
-      currentPhaseQuestions = filteredQuestions.slice(startIdx, startIdx + QUESTIONS_PER_PHASE);
+      // 1. Slice the 30-question pool for this phase
+      const startIdx = (phaseNum - 1) * POOL_SIZE_PER_PHASE;
+      const phasePool = filteredQuestions.slice(startIdx, startIdx + POOL_SIZE_PER_PHASE);
+
+      // 2. Shuffle the pool and pick 10 random questions
+      const shuffledPool = shuffleArray(phasePool);
+      currentPhaseQuestions = shuffledPool.slice(0, QUESTIONS_PER_SESSION);
 
       currentQIndex = 0;
-      phaseScore = 0;
+      sessionScore = 0;
       document.getElementById('questionContainer').classList.remove('hidden');
       document.getElementById('phaseResultCard').classList.add('hidden');
 
@@ -650,19 +741,18 @@
       if (!timerText || !timeProgressBar) return;
 
       timerText.innerText = `${timeLeft}s`;
-
-      // ശതമാനം കണക്കാക്കി വീതി കൃത്യമായി കുറയ്ക്കുന്നു
       const pct = (timeLeft / QUESTION_TIME_LIMIT) * 100;
       timeProgressBar.style.width = `${pct}%`;
 
       if (timeLeft <= 7) {
-        timeProgressBar.style.backgroundColor = '#e11d48'; // Red warning
+        timeProgressBar.style.backgroundColor = '#e11d48';
         timerText.className = 'text-sm font-black text-rose-600 font-mono animate-pulse';
       } else {
-        timeProgressBar.style.backgroundColor = '#4f46e5'; // Indigo
+        timeProgressBar.style.backgroundColor = '#4f46e5';
         timerText.className = 'text-sm font-black text-indigo-600 font-mono';
       }
     }
+
     function handleTimeOut() {
       if (isCurrentAnswered) return;
       isCurrentAnswered = true;
@@ -678,7 +768,7 @@
 
     function renderCurrentQuestion() {
       if (currentPhaseQuestions.length === 0) {
-        document.getElementById('questionContainer').innerHTML = "<p class='text-center text-slate-400 py-10 text-xs sm:text-sm font-semibold'>ഈ വിഷയത്തിൽ ചോദ്യങ്ങൾ ലഭ്യമല്ല.</p>";
+        document.getElementById('questionContainer').innerHTML = "<p class='text-center text-slate-400 py-10 text-xs sm:text-sm font-semibold'>No questions available in this phase.</p>";
         return;
       }
 
@@ -686,7 +776,7 @@
       isCurrentAnswered = false;
       document.getElementById('nextBtn').classList.add('hidden');
 
-      document.getElementById('qCountDisplay').innerText = `Question ${currentQIndex + 1}/${currentPhaseQuestions.length}`;
+      document.getElementById('qCountDisplay').innerText = `Question ${currentQIndex + 1} / ${currentPhaseQuestions.length}`;
       document.getElementById('questionText').innerText = q.question_text;
 
       const opts = [
@@ -720,14 +810,11 @@
       clearInterval(timerInterval);
 
       const isCorrect = selectedOpt === correctOpt;
-      const points = isCorrect ? 1 : 0;
-
       if (isCorrect) {
-        phaseScore++;
-        totalScore++;
-        document.getElementById('currentScoreDisplay').innerText = totalScore;
+        sessionScore++;
       }
 
+      // Highlight options
       document.getElementById(`optBtn_${correctOpt}`).className = "w-full p-3 sm:p-4 border-2 border-emerald-500 bg-emerald-50/70 text-emerald-950 font-bold rounded-xl sm:rounded-2xl flex items-center justify-between shadow-sm";
       if (!isCorrect) {
         document.getElementById(`optBtn_${selectedOpt}`).className = "w-full p-3 sm:p-4 border-2 border-rose-500 bg-rose-50/70 text-rose-950 font-bold rounded-xl sm:rounded-2xl flex items-center justify-between shadow-sm";
@@ -735,12 +822,38 @@
 
       document.getElementById('nextBtn').classList.remove('hidden');
 
+      // Check Daily Score Cap (Max 10 points per phase per day)
+      const selectedDept = document.getElementById('deptFilter').value;
+      const todayPtsEarned = getTodayPointsForPhase(selectedDept, currentPhase);
+      
+      let pointsToAward = 0;
+      if (isCorrect && todayPtsEarned < DAILY_MAX_POINTS_PER_PHASE) {
+        pointsToAward = 1;
+        totalScore++;
+        document.getElementById('currentScoreDisplay').innerText = totalScore;
+
+        // Optimistically push to local history so daily cap updates accurately within the session
+        userAttemptsHistory.push({
+          user_id: currentUserProfile.id,
+          question_id: questionId,
+          selected_option: selectedOpt,
+          is_correct: isCorrect,
+          points_earned: pointsToAward,
+          phase_number: currentPhase,
+          subject_name: selectedDept,
+          attempted_at: new Date().toISOString()
+        });
+      }
+
+      // Save to Supabase
       await client.from('student_attempts').insert([{
         user_id: currentUserProfile.id,
         question_id: questionId,
         selected_option: selectedOpt,
         is_correct: isCorrect,
-        points_earned: points
+        points_earned: pointsToAward,
+        phase_number: currentPhase,
+        subject_name: selectedDept
       }]);
     }
 
@@ -759,24 +872,34 @@
       const resultCard = document.getElementById('phaseResultCard');
       resultCard.classList.remove('hidden');
 
-      const passThreshold = Math.ceil(currentPhaseQuestions.length * 0.7);
-      const isPassed = phaseScore >= passThreshold;
+      const totalQ = currentPhaseQuestions.length;
+      const isPerfect = sessionScore === totalQ && totalQ > 0;
+      const selectedDept = document.getElementById('deptFilter').value;
+      const todayPts = getTodayPointsForPhase(selectedDept, currentPhase);
 
-      document.getElementById('phaseResultTitle').innerText = isPassed 
-        ? `🎉 Phase ${currentPhase} പൂർത്തിയായി!` 
-        : `⚠️ Phase ${currentPhase} വീണ്ടും പരിശീലിക്കുക`;
+      document.getElementById('resultEmoji').innerText = isPerfect ? '🏆' : '📚';
+      document.getElementById('phaseResultTitle').innerText = isPerfect 
+        ? `Phase ${currentPhase} Mastered!` 
+        : `Phase ${currentPhase} Incomplete`;
 
       document.getElementById('phaseResultScore').innerHTML = `
-        ഈ ഘട്ടത്തിൽ നിങ്ങളുടെ സ്കോർ: <strong class="text-indigo-600 text-base sm:text-lg">${phaseScore} / ${currentPhaseQuestions.length}</strong>
+        Session Accuracy: <strong class="text-indigo-600 text-base sm:text-lg">${sessionScore} / ${totalQ}</strong>
       `;
 
-      const maxPhase = Math.ceil(filteredQuestions.length / QUESTIONS_PER_PHASE);
+      const subtext = document.getElementById('phaseResultSubtext');
       const nextBtn = document.getElementById('nextPhaseBtn');
+      const maxPhase = Math.ceil(filteredQuestions.length / POOL_SIZE_PER_PHASE);
 
-      if (currentPhase < maxPhase) {
-        nextBtn.classList.remove('hidden');
-        nextBtn.innerText = isPassed ? `Start Phase ${currentPhase + 1} ➔` : `Skip to Phase ${currentPhase + 1} ➔`;
+      if (isPerfect) {
+        subtext.innerText = `Congratulations! You scored 10/10 and unlocked the next phase. Today's earned points for this phase: ${todayPts}/10 (Come back tomorrow for daily revision points).`;
+        if (currentPhase < maxPhase) {
+          nextBtn.classList.remove('hidden');
+          nextBtn.innerText = `Start Phase ${currentPhase + 1} ➔`;
+        } else {
+          nextBtn.classList.add('hidden');
+        }
       } else {
+        subtext.innerText = `You must score 10/10 to unlock Phase ${currentPhase + 1}. Click "Retry Shuffled Questions" to practice another set of 10 questions from this pool.`;
         nextBtn.classList.add('hidden');
       }
     }
